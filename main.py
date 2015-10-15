@@ -1,6 +1,17 @@
 import sys
 import math
 
+class cellStatus:
+EMPTY=0
+PLAYER=1
+LIGHT=2
+DRONE=3
+
+class actions:
+UP=0
+DOWN=1
+RIGHT=3
+LEFT=4
 
 
 class board:
