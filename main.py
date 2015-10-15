@@ -233,10 +233,12 @@ while 1:
     helper_bots = int(raw_input())
     for i in xrange(player_count):
         x, y = [int(j) for j in raw_input().split()]
-        if i == my_id:
-            myGame.setMyPosition(x, y)
-        else:
-            myGame.refreshPosition(x, y)
+        if x > -1:
+        # real player have x,y > 0
+            if i == my_id:
+                myGame.setMyPosition(x, y)
+            else:
+                myGame.refreshPosition(x, y)
     removal_count = int(raw_input())
     for i in xrange(removal_count):
         remove_x, remove_y = [int(j) for j in raw_input().split()]
