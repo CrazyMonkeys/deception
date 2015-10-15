@@ -75,8 +75,12 @@ class game:
         self.playerDronePosition[iX, iY]
 
     def applyRefresh(self):
-        for position in self.playerPosition = []:
-            self.board()
+        for position in self.playerPosition:
+            self.board.setContent()
+
+    def applyPosition(self):
+        for position in self.playerPosition:
+            self.board.setContent()
 
     def applyMove(self, iMove):
         # return a copy a the current game after the move is applied
