@@ -84,9 +84,9 @@ while 1:
     #theWinMove = miniMax.miniMax(myGame)
     end_time = time.time()
 
-    print "Debug messages..." ,end_time-start_time
+    print("Debug messages...", end_time-start_time)
 
-    print main.getLabel(retour.value)
+    prin( main.getLabel(retour.value))
 
 
     # Write an action using print
