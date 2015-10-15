@@ -13,6 +13,15 @@ class actions:
     DOWN=1
     RIGHT=3
     LEFT=4
+    def getLabel(self, iLabel):
+        if iLabel == 0:
+            return "UP"
+        elif iLabel == 1:
+            return "DOWN"
+        elif iLabel == 2:
+            return "RIGHT"
+        elif iLabel == 3:
+            return "LEFT"
 
 class boardSize:
     X=29
@@ -37,8 +46,8 @@ class move:
         self.value = iEnumMove
     @classmethod
     def normalizePosition(iClass, iPos, iAction):
-        aNewX = iX
-        aNewY = iY
+        aNewX = iPos[0]
+        aNewY = iPos[1]
         if iAction == actions.UP:
             aNewY -=1 
         elif iAction == actions.DOWN:
@@ -69,6 +78,10 @@ class game:
         self.playerDronePosition = []
         self.myPosition = [-1, -1]
 
+    def getMoves(self):
+        aList = [actions.DOWN, actions.UP, actions.RIGHT, actions.LEFT]
+        return aList
+
 
     def refreshPosition(self, iX, iY):
         self.playerPosition.append([iX, iY])
@@ -79,20 +92,23 @@ class game:
     def refreshRemovePosition(self, iX, iY):
         self.playerDronePosition[iX, iY]
 
-    def applyRefresh(self):
-        for position in self.playerPosition:
-            self.board.setContent()
-
     def applyPosition(self):
         for position in self.playerPosition:
-            self.board.setContent()
+            self.board.setContent(position[0], position[1], cellStatus.PLAYER)
+
+        self.board.setContent(self.myPosition[0], self.myPosition[1], cellStatus.PLAYER)
+
+    def applyRefresh(self):
+        for position in self.playerPosition:
+            self.board.setContent(position[0], position[1], cellStatus.LIGHT)
+
+        self.board.setContent(self.myPosition[0], self.myPosition[1], cellStatus.LIGHT)
 
     def applyMove(self, iMove):
         # return a copy a the current game after the move is applied
-        iMove.getNewCoord(self.myPostion[0],1)
-        newGame = copy.copy(self)
-        newGame.iMove.getNewCoord(newGame.myPostion[0],newGame.myPostion[1])
-        return
+        newGame = copy.deepcopy(self)
+        newGame.myPosition = iMove.getNewCoord(newGame.myPosition)
+        return newGame
 
     def evaluate(self):
         pos = self.playerPosition
@@ -176,10 +192,15 @@ while 1:
         remove_x, remove_y = [int(j) for j in raw_input().split()]
         myGame.refreshRemovePosition(remove_x, remove_y)
 
+    myGame.applyPosition()
+
+    retour = miniMax.miniMax(myGame, 2)
+
     myGame.applyRefresh()
 
     #theWinMove = miniMax.miniMax(myGame)
-    print "UP"
+    print retour.getLabel()
+
 
     # Write an action using print
     # To debug: print >> sys.stderr, "Debug messages..."
