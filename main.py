@@ -124,26 +124,33 @@ class game:
     def evaluate(self):
         pos = self.myPosition
         res = 0
-        
+        guard = 0
         testedPos = normalizePosition(pos, actions.UP)
-        while self.board.getContent(testedPos) == cellStatus.EMPTY:
+        while self.board.getContent(testedPos) == cellStatus.EMPTY and guard < 15:
             testedPos = normalizePosition(testedPos, actions.UP)
             res+=1
-        
+            guard +=1
+
+        guard = 0
         testedPos = normalizePosition(pos, actions.DOWN)
-        while self.board.getContent(testedPos) == cellStatus.EMPTY:
+        while self.board.getContent(testedPos) == cellStatus.EMPTY and guard < 15:
             testedPos = normalizePosition(testedPos, actions.DOWN)
             res+=1
-        
+            guard +=1
+
+        guard = 0
         testedPos = normalizePosition(pos, actions.RIGHT)
-        while self.board.getContent(testedPos) == cellStatus.EMPTY:
+        while self.board.getContent(testedPos) == cellStatus.EMPTY and guard < 15:
             testedPos = normalizePosition(testedPos, actions.RIGHT)
             res+=1
-        
+            guard +=1
+
+        guard = 0
         testedPos = normalizePosition(pos, actions.LEFT)
-        while self.board.getContent(testedPos) == cellStatus.EMPTY:
+        while self.board.getContent(testedPos) == cellStatus.EMPTY and guard < 15:
             testedPos = normalizePosition(testedPos, actions.LEFT)
             res+=1
+            guard +=1
         return res
         
 class miniMax:
@@ -171,7 +178,7 @@ class miniMax:
         else:
             valueBestMove =-100000
             for move in iState.getMoves():
-                temp = iClass.calcMin(iState.applyMove(move),iCurrentLevel+1,iMaxLevel)
+                temp = iClass.calcMax(iState.applyMove(move),iCurrentLevel+1,iMaxLevel)
                 if temp > valueBestMove:
                     valueBestMove=temp
             else:
@@ -184,7 +191,7 @@ class miniMax:
         bestMove = None
         valueBestMove = -100000
         for move in iState.getMoves():
-            temp = iClass.calcMin(iState.applyMove(move),1,iMaxLevel)
+            temp = iClass.calcMax(iState.applyMove(move),1,iMaxLevel)
             if temp > valueBestMove:
                 valueBestMove=temp
                 bestMove=move
@@ -218,7 +225,7 @@ while 1:
 
     myGame.applyPosition()
 
-    retour = miniMax.miniMax(myGame, 4)
+    retour = miniMax.miniMax(myGame, 1)
     #print >> sys.stderr, "Debug messages...", retour
     
     myGame.applyRefresh()
