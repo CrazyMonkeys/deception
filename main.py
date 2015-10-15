@@ -164,7 +164,8 @@ class game:
 
     #Evaluate a game
     def evaluate(self):
-        return self.evaluate1()
+        return self.evaluate3()
+
         pos = self.myPosition
         res = 0
         guard = 0
@@ -195,7 +196,6 @@ class game:
             res+=1
             guard +=1
         return res
-
         
     def evaluate1(self):
         res = 0
@@ -203,6 +203,20 @@ class game:
         res += self.evaluateDirection(actions.DOWN)
         res += self.evaluateDirection(actions.RIGHT)
         res += self.evaluateDirection(actions.LEFT)
+        return res
+
+    
+    def evaluate3(self):
+        pos = self.myPosition
+        res = 0
+        for i in range(0,3):
+            for j in range(0,3):
+                testedX = (pos[0]+i)%30
+                testedY = (pos[1]+j)%15
+                pos = [testedX,testedY]
+                if self.board.getContent(testedPos) == cellStatus.EMPTY:
+                    res+=1
+                    print >> sys.stderr, "Evaluating...",pos
         return res
         
                   
