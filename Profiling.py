@@ -4,6 +4,12 @@ import copy
 import time
 import cProfile
 
+LOGGING = False
+
+def cprint(iString):
+    if LOGGING:
+        print str(iString)
+
 def do_cprofile(func):
     def profiled_func(*args, **kwargs):
         profile = cProfile.Profile()
@@ -183,10 +189,11 @@ class miniMax:
             valueBestMove =-100000
             for move in iState.getMoves():
                 temp = iClass.calcMax(iState.applyMove(move),iCurrentLevel+1,iMaxLevel)
+                cprint( "Evaluating"+' '+ getLabel(move.value)+' '+ str(temp))
                 if temp > valueBestMove:
                     valueBestMove=temp
-            else:
-                return iState.evaluate(iCurrentLevel)
+                else:
+                    return iState.evaluate(iCurrentLevel)
             return	valueBestMove
 
     
@@ -210,9 +217,25 @@ class mutableState:
         self.patchDict = {}
 
 class gameProxy:
-    def __init__(self,iBoard):
-        self.board = iBoard
+    def __init__(self,iGame):
+        self.board = iGame.board
         self.mState = mutableState()
+        
+    def printObject(self):
+        cprint ("Evaluating board")
+        for i in range(0,15):
+            line =''
+            for j in range(0,30):
+                line += str(self.getPatchedContent([j,i])).replace("0", ".")+' '
+            cprint(line)
+
+    def setStateFromGame(self,iGame):
+        self.mState.myPosition = iGame.myPosition
+        self.mState.previousAction = iGame.previousAction
+        self.mState.remainingBots= iGame.remainingBots
+
+    def setStateFromProxyGame(self,iMutableState):
+        self.mState = iMutableState
     
     def getPatchedContent(self,iPos):
         k = tuple(iPos)
@@ -226,31 +249,42 @@ class gameProxy:
         aList = []
         if self.getPatchedContent(normalizePosition(self.mState.myPosition, actions.UP)) == cellStatus.EMPTY:
             aList.append(move(actions.UP))
+            cprint( "Good to get up")
         if self.getPatchedContent(normalizePosition(self.mState.myPosition, actions.DOWN)) == cellStatus.EMPTY:
             aList.append(move(actions.DOWN))
+            cprint(  "Good to get down")
         if self.getPatchedContent(normalizePosition(self.mState.myPosition, actions.RIGHT)) == cellStatus.EMPTY:
             aList.append(move(actions.RIGHT))
+            cprint(  "Good to get right")
         if self.getPatchedContent(normalizePosition(self.mState.myPosition, actions.LEFT)) == cellStatus.EMPTY:
             aList.append(move(actions.LEFT))
+            cprint(  "Good to get left")
         #if normalizePosition(self.myPosition, self.previousAction) == cellStatus.LIGHT:
             #aList.append(move(actions.DEPLOY))
+            
+
         if not aList:
-            aList.append(move(actions.DEPLOY))
+            #aList.append(move(actions.DEPLOY))
+            aList.append(move(actions.UP))
         return aList
 
 
     #Apply a move to the current game and return a copy of the game
     def applyMove(self, iMove):
         # return a copy a the current game proxy after the move is applied
-        newGame = gameProxy(self.board)
-        newGame.mState = copy.copy(self.mState)
+        
+        mState = copy.copy(self.mState)
+        newGame = gameProxy(self)
+        newGame.setStateFromProxyGame(mState)
         newGame.mState.patchDict[tuple(newGame.mState.myPosition)] = cellStatus.LIGHT
         newGame.mState.myPosition = iMove.getNewCoord(newGame.mState.myPosition)
         newGame.mState.previousAction = iMove
+        newGame.printObject()
         return newGame
 
     #Evaluate a game
     def evaluate(self,iProf):
+        #print "prof",iProf
         return iProf
 
 
@@ -260,8 +294,9 @@ def main():
     start_time = time.time()
     mygame = game()
     mygame.setMyPosition(10, 10)
-    aGameProxy = gameProxy(mygame.board)
-    retour = miniMax.miniMax(aGameProxy, 50)
+    aGameProxy = gameProxy(mygame)
+    
+    retour = miniMax.miniMax(aGameProxy, 4)
     
     print >> sys.stderr, "Retour=",getLabel(retour.value)
     

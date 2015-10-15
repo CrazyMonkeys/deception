@@ -1,6 +1,8 @@
 import Profiling
 import time
 
+LOGGING = False
+
 
 
 def getGame1():
@@ -193,8 +195,9 @@ for myGame in aGamelist:
         myGame.applyPosition()
         myGame.board.printObject()
 
-        aGameProxy = Profiling.gameProxy(myGame.board)
-        retour = Profiling.miniMax.miniMax(aGameProxy, 4)
+        aGameProxy = Profiling.gameProxy(myGame)
+        aGameProxy.setStateFromGame(myGame)
+        retour = Profiling.miniMax.miniMax(aGameProxy, 2)
         #print >> sys.stderr, "Debug messages...", retour
 
         #theWinMove = miniMax.miniMax(myGame)
