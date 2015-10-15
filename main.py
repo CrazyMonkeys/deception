@@ -86,10 +86,9 @@ class game:
 
     def applyMove(self, iMove):
         # return a copy a the current game after the move is applied
-        iMove.getNewCoord(self.myPostion[0],1)
         newGame = copy.copy(self)
-        newGame.iMove.getNewCoord(newGame.myPostion[0],newGame.myPostion[1])
-        return
+        newGame.setMyPosition = iMove.getNewCoord(newGame.myPostion())
+        return newGame
 
 
 class miniMax:
