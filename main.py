@@ -118,8 +118,8 @@ class game:
     def setMyPosition(self, x ,y):
         self.myPosition = [x, y]
 
-    def refreshRemovePosition(self, iPos):
-        self.board.setContent(iPos, cellStatus.EMPTY)
+    def refreshRemovePosition(self, iX, iY):
+        self.playerDronePosition = [iX, iY]
 
     def applyPosition(self):
         for position in self.playerPosition:
@@ -266,7 +266,7 @@ while 1:
     removal_count = int(raw_input())
     for i in xrange(removal_count):
         remove_x, remove_y = [int(j) for j in raw_input().split()]
-        myGame.refreshRemovePosition([remove_x, remove_y])
+        myGame.refreshRemovePosition(remove_x, remove_y)
 
     myGame.applyPosition()
 
