@@ -7,9 +7,10 @@ class board:
     def __init__(self):
         self.xMax = 30
         self.yMax = 15
-        self.grille = createGrille()
-    def createGrille():
-        pass
+        self.grille = []
+        for i in range(0,self.yMax):
+            self.grille.append()
+            
 
     def getContent(self, x, y):
         pass
