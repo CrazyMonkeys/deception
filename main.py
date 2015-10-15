@@ -79,7 +79,7 @@ class game:
         self.myPosition = [-1, -1]
 
     def getMoves(self):
-        aList = [actions.DOWN, actions.UP, actions.RIGHT, actions.LEFT]
+        aList = [move(actions.DOWN), move(actions.UP), move(actions.RIGHT), move(actions.LEFT)]
         return aList
 
 
@@ -125,7 +125,7 @@ class miniMax:
         else:
             valueBestMove = +100000
             for move in iState.getMoves():
-                temp = iClass.calcMax(iState.playMove(move),iCurrentLevel+1,iMaxLevel)
+                temp = iClass.calcMax(iState.applyMove(move),iCurrentLevel+1,iMaxLevel)
                 if temp < valueBestMove:
                     valueBestMove=temp
                     bestMove=move
@@ -141,7 +141,7 @@ class miniMax:
         else:
             valueBestMove =-100000
             for move in iState.getMoves():
-                temp = iClass.calcMin(iState.playMove(move),iCurrentLevel+1,iMaxLevel)
+                temp = iClass.calcMin(iState.applyMove(move),iCurrentLevel+1,iMaxLevel)
                 if temp > valueBestMove:
                     valueBestMove=temp
             else:
@@ -154,7 +154,7 @@ class miniMax:
         bestMove = None
         valueBestMove = -100000
         for move in iState.getMoves():
-            temp = iClass.calcMin(iState.playMove(move),1,iMaxLevel)
+            temp = iClass.calcMin(iState.applyMove(move),1,iMaxLevel)
             if temp > valueBestMove:
                 valueBestMove=temp
                 bestMove=move
