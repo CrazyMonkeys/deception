@@ -138,6 +138,7 @@ class game:
         newGame = copy.deepcopy(self)
         newGame.board.setContent(newGame.myPosition, cellStatus.LIGHT)
         newGame.myPosition = iMove.getNewCoord(newGame.myPosition)
+        self.previousAction = iMove
         return newGame
 
     def evaluate(self):
