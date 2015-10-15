@@ -123,7 +123,7 @@ class game:
     def applyMove(self, iMove):
         # return a copy a the current game after the move is applied
         newGame = copy.deepcopy(self)
-        newGame.board.setContent(newGame.myPosition, actions.LIGHT)
+        newGame.board.setContent(newGame.myPosition, cellStatus.LIGHT)
         newGame.myPosition = iMove.getNewCoord(newGame.myPosition)
         return newGame
 
