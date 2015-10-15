@@ -3,12 +3,15 @@ import math
 import copy
 import time
 
+
+#possible status of a cell of the board
 class cellStatus:
     EMPTY=0
     PLAYER=1
     LIGHT=2
     DRONE=3
 
+#Possible actions for a player
 class actions:
     UP=0
     DOWN=1
@@ -16,6 +19,7 @@ class actions:
     LEFT=3
     DEPLOY=4
     
+#Give the string label for the action to perform
 def getLabel(iLabel):
     if iLabel == 0:
         return "UP"
@@ -28,10 +32,13 @@ def getLabel(iLabel):
     elif iLabel == 4:
         return "DEPLOY"
 
+        
+#Board size, origin position = 0
 class boardSize:
     X=29
     Y=14
     
+#Static method retuning an updated position based on  current pos + move. Thore board is taken into account
 def normalizePosition(iPos, iAction):
     aNewX = iPos[0]
     aNewY = iPos[1]
@@ -54,24 +61,30 @@ def normalizePosition(iPos, iAction):
     aOutput = [aNewX,aNewY]
     return aOutput
 
+     
 class board:
     def __init__(self):
         self.xMax = 30
         self.yMax = 15
         self.grille = []
+        #creates represntation of the board
         for i in range(0,self.yMax):
             self.grille.append([cellStatus.EMPTY]*self.xMax)
-
+            
+    #get the content of cell located at iPos
     def getContent(self, iPos):
         return self.grille[iPos[1]][iPos[0]]
         
+    #Set the content of cell located at iPos       
     def setContent(self, iPos,iContent):
         self.grille[iPos[1]][iPos[0]]=iContent
+
 
 class move:
     def __init__(self, iEnumMove):
         self.value = iEnumMove
-
+        
+    #Transforms current coords to new coords dependgin on move type
     def getNewCoord(self,iPos):
         return normalizePosition(iPos,self.value)
 
