@@ -1,23 +1,61 @@
 import sys
 import math
 
+class cellStatus:
+EMPTY=0
+PLAYER=1
+LIGHT=2
+DRONE=3
+
+class actions:
+UP=0
+DOWN=1
+RIGHT=3
+LEFT=4
+
+class boardSize:
+X=29
+Y=14
 
 class board:
     def __init__(self):
         self.xMax = 30
         self.yMax = 15
-        self.grille = createGrille()
-    def createGrille():
-        pass
+        self.grille = []
+        for i in range(0,self.yMax):
+            self.grille.append([cellStatus.EMPTY]*xMax)            
 
-    def getContent(self, x, y):
-        pass
+    def getContent(self, iX, iY):
+        return self.grille[iY][iX]
 
 
 class move:
     def __init__(self, iEnumMove):
         self.value = iEnumMove
 
+    def getNewCoord(self,iX,iY):
+        aNewX = iX
+        aNewY = iY
+        if self.value == actions.UP:
+            aNewY -=1 
+        elif self.value == actions.DOWN:
+            aNewY +=1
+        elif self.value == actions.RIGHT:
+            aNewX +=1
+        elif self.value == actions.LEFT:
+            aNewX -=1
+        if aNewX<0:
+            aNewX = boardSize.X
+        if aNewX>boardSize.X:
+            aNewX = 0
+        if aNewY<0:
+            aNewX = boardSize.Y
+        if aNewX>boardSize.Y:
+            aNewX = 0
+        aOutput = [aNewX,aNewY]
+        return aOutput
+
+            
 class game:
     def __init__(self):
         self.board = board()
