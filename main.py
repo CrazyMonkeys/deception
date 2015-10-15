@@ -199,10 +199,10 @@ class game:
             for j in range(0,3):
                 testedX = (pos[0]+i)%30
                 testedY = (pos[1]+j)%15
-                pos = [testedX,testedY]
+                testedPos = [testedX,testedY]
                 if self.board.getContent(testedPos) == cellStatus.EMPTY:
                     res+=1
-                    print >> sys.stderr, "Evaluating...",pos
+                    print >> sys.stderr, "Evaluating...",testedPos
         return res
         
 class miniMax:
