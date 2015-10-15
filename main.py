@@ -1,5 +1,6 @@
 import sys
 import math
+import copy
 
 class cellStatus:
     EMPTY=0
@@ -66,20 +67,33 @@ class game:
         self.board = board()
         self.playerPosition = []
         self.playerDronePosition = []
+        self.myPosition = [-1, -1]
 
-    def refreshPosition(iSelf, iX, iY):
-        iSelf.playerPosition = [iX, iY]
 
-    def refreshRemovePosition(iSelf, iX, iY):
-        iSelf.playerDronePosition[iX, iY]
+    def refreshPosition(self, iX, iY):
+        self.playerPosition.append([iX, iY])
 
-    def applyRefresh(iSelf):
-        pass
+    def setMyPosition(self, x ,y):
+        self.myPosition = [x, y]
+
+    def refreshRemovePosition(self, iX, iY):
+        self.playerDronePosition[iX, iY]
+
+    def applyRefresh(self):
+        for position in self.playerPosition:
+            self.board.setContent()
+
+    def applyPosition(self):
+        for position in self.playerPosition:
+            self.board.setContent()
 
     def applyMove(self, iMove):
         # return a copy a the current game after the move is applied
-        pass
-    
+        iMove.getNewCoord(self.myPostion[0],1)
+        newGame = copy.copy(self)
+        newGame.iMove.getNewCoord(newGame.myPostion[0],newGame.myPostion[1])
+        return
+
     def evaluate(self):
         pos = self.playerPosition()
         res = 0
@@ -146,7 +160,10 @@ while 1:
     helper_bots = int(raw_input())
     for i in xrange(player_count):
         x, y = [int(j) for j in raw_input().split()]
-        myGame.refreshPosition(x, y)
+        if i == my_id:
+            myGame.setMyPosition(x, y)
+        else:
+            myGame.refreshPosition(x, y)
     removal_count = int(raw_input())
     for i in xrange(removal_count):
         remove_x, remove_y = [int(j) for j in raw_input().split()]
