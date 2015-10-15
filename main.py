@@ -65,8 +65,8 @@ class board:
     def getContent(self, iPos):
         return self.grille[iPos[1]][iPos[0]]
         
-    def setContent(self, iX, iY,iContent):
-        self.grille[iY][iX]=iContent
+    def setContent(self, iPos,iContent):
+        self.grille[iPos[1]][iPos[0]]=iContent
 
 class move:
     def __init__(self, iEnumMove):
@@ -110,19 +110,20 @@ class game:
 
     def applyPosition(self):
         for position in self.playerPosition:
-            self.board.setContent(position[0], position[1], cellStatus.PLAYER)
+            self.board.setContent(position, cellStatus.PLAYER)
 
-        self.board.setContent(self.myPosition[0], self.myPosition[1], cellStatus.PLAYER)
+        self.board.setContent(self.myPosition, cellStatus.PLAYER)
 
     def applyRefresh(self):
         for position in self.playerPosition:
-            self.board.setContent(position[0], position[1], cellStatus.LIGHT)
+            self.board.setContent(position, cellStatus.LIGHT)
 
-        self.board.setContent(self.myPosition[0], self.myPosition[1], cellStatus.LIGHT)
+        self.board.setContent(self.myPosition, cellStatus.LIGHT)
 
     def applyMove(self, iMove):
         # return a copy a the current game after the move is applied
         newGame = copy.deepcopy(self)
+        newGame.board.setContent(newGame.myPosition, actions.LIGHT)
         newGame.myPosition = iMove.getNewCoord(newGame.myPosition)
         return newGame
 
