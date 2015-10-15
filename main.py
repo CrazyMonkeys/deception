@@ -3,20 +3,20 @@ import math
 import copy
 
 class cellStatus:
-EMPTY=0
-PLAYER=1
-LIGHT=2
-DRONE=3
+    EMPTY=0
+    PLAYER=1
+    LIGHT=2
+    DRONE=3
 
 class actions:
-UP=0
-DOWN=1
-RIGHT=3
-LEFT=4
+    UP=0
+    DOWN=1
+    RIGHT=3
+    LEFT=4
 
 class boardSize:
-X=29
-Y=14
+    X=29
+    Y=14
 
 class board:
     def __init__(self):
@@ -24,11 +24,13 @@ class board:
         self.yMax = 15
         self.grille = []
         for i in range(0,self.yMax):
-            self.grille.append([cellStatus.EMPTY]*xMax)            
+            self.grille.append([cellStatus.EMPTY]*self.xMax)
 
     def getContent(self, iX, iY):
         return self.grille[iY][iX]
-
+        
+    def setContent(self, iX, iY,iContent):
+        self.grille[iY][iX]=iContent
 
 class move:
     def __init__(self, iEnumMove):
@@ -56,7 +58,7 @@ class move:
         aOutput = [aNewX,aNewY]
         return aOutput
 
-            
+
 class game:
     def __init__(self):
         self.board = board()
@@ -137,16 +139,16 @@ while 1:
     helper_bots = int(raw_input())
     for i in xrange(player_count):
         x, y = [int(j) for j in raw_input().split()]
-        game.refreshPosition(x, y)
+        myGame.refreshPosition(x, y)
     removal_count = int(raw_input())
     for i in xrange(removal_count):
         remove_x, remove_y = [int(j) for j in raw_input().split()]
-        game.refreshRemovePosition(remove_x, remove_y)
+        myGame.refreshRemovePosition(remove_x, remove_y)
 
-    game.applyRefresh()
+    myGame.applyRefresh()
 
-    theWinMove = miniMax.miniMax(myGame)
-    print theWinMove.getvalue()
+    #theWinMove = miniMax.miniMax(myGame)
+    print "UP"
 
     # Write an action using print
     # To debug: print >> sys.stderr, "Debug messages..."
