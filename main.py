@@ -78,6 +78,10 @@ class board:
     #Set the content of cell located at iPos       
     def setContent(self, iPos,iContent):
         self.grille[iPos[1]][iPos[0]]=iContent
+        
+    def print():
+        for line in self.grille:
+            print str(line.join(' '))
 
 
 class move:
@@ -97,7 +101,7 @@ class game:
         self.myPosition = [-1, -1]
         self.previousAction = None
         self.remainingBots= 0
-
+        
     #List the possible moves for the current player
     def getMoves(self):
         aList = []
@@ -160,6 +164,7 @@ class game:
 
     #Evaluate a game
     def evaluate(self):
+        return self.evaluate1()
         pos = self.myPosition
         res = 0
         guard = 0
@@ -190,13 +195,14 @@ class game:
             res+=1
             guard +=1
         return res
+
         
     def evaluate1(self):
         res = 0
-        res += evaluateDirection(self,actions.UP)
-        res += evaluateDirection(self,actions.DOWN)
-        res += evaluateDirection(self,actions.RIGHT)
-        res += evaluateDirection(self,actions.LEFT)
+        res += self.evaluateDirection(actions.UP)
+        res += self.evaluateDirection(actions.DOWN)
+        res += self.evaluateDirection(actions.RIGHT)
+        res += self.evaluateDirection(actions.LEFT)
         return res
         
                   
@@ -224,13 +230,10 @@ class game:
             else: #Case of a player or bot
                 break
             guard +=1
-        result = maxFree + 2* round(otherFree / (1+lightCount) 
+        result = int(maxFree + round(10*otherFree / (1+lightCount) ))
+        #print >> sys.stderr, "Result",getLabel(iAction), maxFree, otherFree,lightCount,result
         return result
-        
-    
-        
-       
-        
+
 class miniMax:
     @classmethod
     def calcMin(iClass,iState,iCurrentLevel, iMaxLevel):
