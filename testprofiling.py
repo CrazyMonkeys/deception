@@ -213,8 +213,11 @@ for myGame in aGamelist:
 
 
         myGame.applyRefresh(retour)
-
         myGame.myPosition = retour.getNewCoord(myGame.myPosition)
+        if  myGame.board.getContent(myGame.myPosition) == 2:
+            print "I SAW THE LIGHT"
+            break
+        
 
 
 
