@@ -190,6 +190,46 @@ class game:
             guard +=1
         return res
         
+    def evaluate1(self):
+        res = 0
+        res += evaluateDirection(self,actions.UP)
+        res += evaluateDirection(self,actions.DOWN)
+        res += evaluateDirection(self,actions.RIGHT)
+        res += evaluateDirection(self,actions.LEFT)
+        return res
+        
+                  
+            
+    def evaluateDirection(self,iAction):
+        pos = self.myPosition
+        testedPos = normalizePosition(pos, actions.UP)
+        guard = 0
+        res = 0
+        maxFree = 0
+        otherFree = 0
+        lightCount = 0
+        isLightCrossed = False
+        while guard < 15:
+            testedPos = normalizePosition(testedPos, actions.UP)
+            if self.board.getContent(testedPos) == cellStatus.EMPTY:
+                if isLightCrossed:
+                    otherFree += 1
+                else:
+                    maxFree+=1
+            elif self.board.getContent(testedPos) == cellStatus.LIGHT: 
+                isLightCrossed = True
+                lightCount += 1
+                
+            else: #Case of a player or bot
+                break
+            guard +=1
+        result = maxFree + 2* round(otherFree / (1+lightCount) 
+        return result
+        
+    
+        
+       
+        
 class miniMax:
     @classmethod
     def calcMin(iClass,iState,iCurrentLevel, iMaxLevel):
