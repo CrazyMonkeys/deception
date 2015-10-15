@@ -27,7 +27,9 @@ class board:
 
     def getContent(self, iX, iY):
         return self.grille[iY][iX]
-
+        
+    def setContent(self, iX, iY,iContent):
+        self.grille[iY][iX]=iContent
 
 class move:
     def __init__(self, iEnumMove):
