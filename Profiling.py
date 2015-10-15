@@ -90,6 +90,10 @@ class board:
     #Set the content of cell located at iPos       
     def setContent(self, iPos,iContent):
         self.grille[iPos[1]][iPos[0]]=iContent
+    
+    def printObject(self):
+        for line in self.grille:
+            print(str((' ').join([str(i).replace("0", ".") for i in line])))
 
 
 class move:
