@@ -71,8 +71,8 @@ class board:
     def getContent(self, iPos):
         return self.grille[iPos[1]][iPos[0]]
         
-    def setContent(self, iX, iY,iContent):
-        self.grille[iY][iX]=iContent
+    def setContent(self, iPos,iContent):
+        self.grille[iPos[1]][iPos[0]]=iContent
 
 class move:
     def __init__(self, iEnumMove):
@@ -116,45 +116,53 @@ class game:
 
     def applyPosition(self):
         for position in self.playerPosition:
-            self.board.setContent(position[0], position[1], cellStatus.PLAYER)
+            self.board.setContent(position, cellStatus.PLAYER)
 
-        self.board.setContent(self.myPosition[0], self.myPosition[1], cellStatus.PLAYER)
+        self.board.setContent(self.myPosition, cellStatus.PLAYER)
 
     def applyRefresh(self):
         for position in self.playerPosition:
-            self.board.setContent(position[0], position[1], cellStatus.LIGHT)
+            self.board.setContent(position, cellStatus.LIGHT)
 
-        self.board.setContent(self.myPosition[0], self.myPosition[1], cellStatus.LIGHT)
+        self.board.setContent(self.myPosition, cellStatus.LIGHT)
 
     def applyMove(self, iMove):
         # return a copy a the current game after the move is applied
         newGame = copy.deepcopy(self)
+        newGame.board.setContent(newGame.myPosition, actions.LIGHT)
         newGame.myPosition = iMove.getNewCoord(newGame.myPosition)
         return newGame
 
     def evaluate(self):
         pos = self.myPosition
         res = 0
-        
+        guard = 0
         testedPos = normalizePosition(pos, actions.UP)
-        while self.board.getContent(testedPos) == cellStatus.EMPTY:
+        while self.board.getContent(testedPos) == cellStatus.EMPTY and guard < 15:
             testedPos = normalizePosition(testedPos, actions.UP)
             res+=1
-        
+            guard +=1
+
+        guard = 0
         testedPos = normalizePosition(pos, actions.DOWN)
-        while self.board.getContent(testedPos) == cellStatus.EMPTY:
+        while self.board.getContent(testedPos) == cellStatus.EMPTY and guard < 15:
             testedPos = normalizePosition(testedPos, actions.DOWN)
             res+=1
-        
+            guard +=1
+
+        guard = 0
         testedPos = normalizePosition(pos, actions.RIGHT)
-        while self.board.getContent(testedPos) == cellStatus.EMPTY:
+        while self.board.getContent(testedPos) == cellStatus.EMPTY and guard < 15:
             testedPos = normalizePosition(testedPos, actions.RIGHT)
             res+=1
-        
+            guard +=1
+
+        guard = 0
         testedPos = normalizePosition(pos, actions.LEFT)
-        while self.board.getContent(testedPos) == cellStatus.EMPTY:
+        while self.board.getContent(testedPos) == cellStatus.EMPTY and guard < 15:
             testedPos = normalizePosition(testedPos, actions.LEFT)
             res+=1
+            guard +=1
         return res
         
 class miniMax:
@@ -182,7 +190,7 @@ class miniMax:
         else:
             valueBestMove =-100000
             for move in iState.getMoves():
-                temp = iClass.calcMin(iState.applyMove(move),iCurrentLevel+1,iMaxLevel)
+                temp = iClass.calcMax(iState.applyMove(move),iCurrentLevel+1,iMaxLevel)
                 if temp > valueBestMove:
                     valueBestMove=temp
             else:
@@ -195,7 +203,7 @@ class miniMax:
         bestMove = None
         valueBestMove = -100000
         for move in iState.getMoves():
-            temp = iClass.calcMin(iState.applyMove(move),1,iMaxLevel)
+            temp = iClass.calcMax(iState.applyMove(move),1,iMaxLevel)
             if temp > valueBestMove:
                 valueBestMove=temp
                 bestMove=move
@@ -229,7 +237,7 @@ while 1:
 
     myGame.applyPosition()
 
-    retour = miniMax.miniMax(myGame, 4)
+    retour = miniMax.miniMax(myGame, 1)
     #print >> sys.stderr, "Debug messages...", retour
     
     myGame.applyRefresh()
