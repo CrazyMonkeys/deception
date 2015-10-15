@@ -34,17 +34,17 @@ class board:
 class move:
     def __init__(self, iEnumMove):
         self.value = iEnumMove
-
-    def getNewCoord(self,iX,iY):
+    @classmethod
+    def normalizePosition(iClass, iPos, iAction):
         aNewX = iX
         aNewY = iY
-        if self.value == actions.UP:
+        if iAction == actions.UP:
             aNewY -=1 
-        elif self.value == actions.DOWN:
+        elif iAction == actions.DOWN:
             aNewY +=1
-        elif self.value == actions.RIGHT:
+        elif iAction == actions.RIGHT:
             aNewX +=1
-        elif self.value == actions.LEFT:
+        elif iAction == actions.LEFT:
             aNewX -=1
         if aNewX<0:
             aNewX = boardSize.X
@@ -56,6 +56,9 @@ class move:
             aNewX = 0
         aOutput = [aNewX,aNewY]
         return aOutput
+        
+    def getNewCoord(self,iPos):
+        return move.normalizePosition(iPos,self.value)
 
 
 class game:
@@ -76,6 +79,11 @@ class game:
     def applyMove(self, iMove):
         # return a copy a the current game after the move is applied
         pass
+    
+    def evaluate(self):
+        pos = self.playerPosition()
+        res = 0
+        if self.board.getContent()
 
 
 class miniMax:
