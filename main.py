@@ -1,6 +1,7 @@
 import sys
 import math
 import copy
+import time
 
 class cellStatus:
     EMPTY=0
@@ -59,7 +60,6 @@ class board:
             self.grille.append([cellStatus.EMPTY]*self.xMax)
 
     def getContent(self, iPos):
-        print >> sys.stderr, "content pos", iPos
         return self.grille[iPos[1]][iPos[0]]
         
     def setContent(self, iX, iY,iContent):
@@ -81,7 +81,16 @@ class game:
         self.myPosition = [-1, -1]
 
     def getMoves(self):
-        aList = [move(actions.DOWN), move(actions.UP), move(actions.RIGHT), move(actions.LEFT)]
+
+        aList = []
+        if self.board.getContent(normalizePosition(self.myPosition, actions.UP)) == cellStatus.EMPTY:
+            aList.append(move(actions.UP))
+        if self.board.getContent(normalizePosition(self.myPosition, actions.DOWN)) == cellStatus.EMPTY:
+            aList.append(move(actions.DOWN))
+        if self.board.getContent(normalizePosition(self.myPosition, actions.RIGHT)) == cellStatus.EMPTY:
+            aList.append(move(actions.RIGHT))
+        if self.board.getContent(normalizePosition(self.myPosition, actions.LEFT)) == cellStatus.EMPTY:
+            aList.append(move(actions.LEFT))
         return aList
 
 
@@ -92,7 +101,7 @@ class game:
         self.myPosition = [x, y]
 
     def refreshRemovePosition(self, iX, iY):
-        self.playerDronePosition[iX, iY]
+        self.playerDronePosition = [iX, iY]
 
     def applyPosition(self):
         for position in self.playerPosition:
@@ -182,6 +191,7 @@ my_id = int(raw_input())
 myGame = game()
 
 while 1:
+    start_time = time.time()
     helper_bots = int(raw_input())
     for i in xrange(player_count):
         x, y = [int(j) for j in raw_input().split()]
@@ -196,14 +206,18 @@ while 1:
 
     myGame.applyPosition()
 
-    retour = miniMax.miniMax(myGame, 2)
-    print >> sys.stderr, "Debug messages...", retour
+    retour = miniMax.miniMax(myGame, 4)
+    #print >> sys.stderr, "Debug messages...", retour
     
     myGame.applyRefresh()
 
     #theWinMove = miniMax.miniMax(myGame)
-    print getLabel(retour.value)
+    end_time = time.time()
 
+    print >> sys.stderr, "Debug messages..." ,end_time-start_time
+    
+    print getLabel(retour.value)
+    
 
     # Write an action using print
     # To debug: print >> sys.stderr, "Debug messages..."
