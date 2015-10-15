@@ -96,6 +96,7 @@ class game:
         self.playerDronePosition = []
         self.myPosition = [-1, -1]
         self.previousAction = None
+        self.remainingBots= 0
 
     #List the possible moves for the current player
     def getMoves(self):
@@ -120,6 +121,9 @@ class game:
     def setMyPosition(self, x ,y):
         self.myPosition = [x, y]
 
+    def setRemainingBots(self, iCount)
+            self.remainingBots=iCount
+            
     def refreshRemovePosition(self, iPos):
         self.board.setContent(iPos, cellStatus.EMPTY)
 
@@ -241,6 +245,7 @@ while 1:
     #Collet the inputs
     start_time = time.time()
     helper_bots = int(raw_input())
+    
     for i in xrange(player_count):
         x, y = [int(j) for j in raw_input().split()]
         if x > -1:
@@ -255,6 +260,7 @@ while 1:
         myGame.refreshRemovePosition([remove_x, remove_y])
 
     myGame.applyPosition()
+    myGame.setRemainingBots(helper_bots)
 
     retour = miniMax.miniMax(myGame, 1)
     #print >> sys.stderr, "Debug messages...", retour
