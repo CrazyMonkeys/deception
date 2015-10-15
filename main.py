@@ -80,7 +80,15 @@ class game:
 
     def applyPosition(self):
         for position in self.playerPosition:
-            self.board.setContent()
+            self.board.setContent(position[0], position[1], cellStatus.PLAYER)
+
+        self.board.setContent(self.myPosition[0], self.myPosition[1], cellStatus.PLAYER)
+
+    def applyPosition(self):
+        for position in self.playerPosition:
+            self.board.setContent(position[0], position[1], cellStatus.LIGHT)
+
+        self.board.setContent(self.myPosition[0], self.myPosition[1], cellStatus.LIGHT)
 
     def applyMove(self, iMove):
         # return a copy a the current game after the move is applied
@@ -156,10 +164,15 @@ while 1:
         remove_x, remove_y = [int(j) for j in raw_input().split()]
         myGame.refreshRemovePosition(remove_x, remove_y)
 
+    myGame.applyPosition()
+
+    #get the move
+
     myGame.applyRefresh()
 
     #theWinMove = miniMax.miniMax(myGame)
     print "UP"
+
 
     # Write an action using print
     # To debug: print >> sys.stderr, "Debug messages..."
