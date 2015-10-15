@@ -214,7 +214,7 @@ for myGame in aGamelist:
 
         myGame.applyRefresh(retour)
         myGame.myPosition = retour.getNewCoord(myGame.myPosition)
-        if  myGame.board.getContent(myGame.myPosition) == 2:
+        if  myGame.board.getContent(myGame.myPosition) == 2 and not retour.value == Profiling.actions.DEPLOY:
             print "I SAW THE LIGHT"
             break
         

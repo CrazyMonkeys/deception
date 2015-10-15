@@ -203,7 +203,9 @@ for myGame in aGamelist:
 
         print( main.getLabel(retour.value))
 
+   
         if retour.value == main.actions.DEPLOY:
+            print "DEPLOY"
             drone -= 1
             if drone < 0:
                 print("GAME OVER LOOSERS")
@@ -211,8 +213,11 @@ for myGame in aGamelist:
 
 
         myGame.applyRefresh(retour)
-
         myGame.myPosition = retour.getNewCoord(myGame.myPosition)
+        if  myGame.board.getContent(myGame.myPosition) == 2 and not retour.value == main.actions.DEPLOY:
+            print "I SAW THE LIGHT"
+            break
+        
 
 
 
