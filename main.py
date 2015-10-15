@@ -73,9 +73,9 @@ class game:
 
     def applyMove(self, iMove):
         # return a copy a the current game after the move is applied
-        if iMove.getNewCoord(self.myPostion[0],1)
+        iMove.getNewCoord(self.myPostion[0],1)
         newGame = copy.copy(self)
-        newGame. 
+        newGame.iMove.getNewCoord(newGame.myPostion[0],newGame.myPostion[1])
         return
 
 
