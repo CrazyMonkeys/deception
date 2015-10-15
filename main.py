@@ -136,16 +136,16 @@ while 1:
     helper_bots = int(raw_input())
     for i in xrange(player_count):
         x, y = [int(j) for j in raw_input().split()]
-        game.refreshPosition(x, y)
+        myGame.refreshPosition(x, y)
     removal_count = int(raw_input())
     for i in xrange(removal_count):
         remove_x, remove_y = [int(j) for j in raw_input().split()]
-        game.refreshRemovePosition(remove_x, remove_y)
+        myGame.refreshRemovePosition(remove_x, remove_y)
 
-    game.applyRefresh()
+    myGame.applyRefresh()
 
-    theWinMove = miniMax.miniMax(myGame)
-    print theWinMove.getvalue()
+    #theWinMove = miniMax.miniMax(myGame)
+    print "UP"
 
     # Write an action using print
     # To debug: print >> sys.stderr, "Debug messages..."
