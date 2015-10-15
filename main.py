@@ -13,6 +13,15 @@ class actions:
     DOWN=1
     RIGHT=3
     LEFT=4
+    def getLabel(self, iLabel):
+        if iLabel == 0:
+            return "UP"
+        elif iLabel == 1:
+            return "DOWN"
+        elif iLabel == 2:
+            return "RIGHT"
+        elif iLabel == 3:
+            return "LEFT"
 
 class boardSize:
     X=29
@@ -37,8 +46,8 @@ class move:
         self.value = iEnumMove
     @classmethod
     def normalizePosition(iClass, iPos, iAction):
-        aNewX = iX
-        aNewY = iY
+        aNewX = iPos[0]
+        aNewY = iPos[1]
         if iAction == actions.UP:
             aNewY -=1 
         elif iAction == actions.DOWN:
@@ -79,17 +88,13 @@ class game:
     def refreshRemovePosition(self, iX, iY):
         self.playerDronePosition[iX, iY]
 
-    def applyRefresh(self):
-        for position in self.playerPosition:
-            self.board.setContent()
-
     def applyPosition(self):
         for position in self.playerPosition:
             self.board.setContent(position[0], position[1], cellStatus.PLAYER)
 
         self.board.setContent(self.myPosition[0], self.myPosition[1], cellStatus.PLAYER)
 
-    def applyPosition(self):
+    def applyRefresh(self):
         for position in self.playerPosition:
             self.board.setContent(position[0], position[1], cellStatus.LIGHT)
 
@@ -97,8 +102,8 @@ class game:
 
     def applyMove(self, iMove):
         # return a copy a the current game after the move is applied
-        newGame = copy.copy(self)
-        newGame.setMyPosition = iMove.getNewCoord(newGame.myPostion())
+        newGame = copy.deepcopy(self)
+        newGame.myPosition = iMove.getNewCoord(newGame.myPosition)
         return newGame
 
     def evaluate(self):
@@ -178,12 +183,12 @@ while 1:
 
     myGame.applyPosition()
 
-    #get the move
+    retour = miniMax.miniMax(myGame, 2)
 
     myGame.applyRefresh()
 
     #theWinMove = miniMax.miniMax(myGame)
-    print "UP"
+    print retour.getLabel()
 
 
     # Write an action using print
