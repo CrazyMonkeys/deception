@@ -111,11 +111,18 @@ class game:
         return newGame
 
     def evaluate(self):
-        pos = self.playerPosition()
+        pos = self.playerPosition
         res = 0
-        if self.board.getContent()
-
-
+        if self.board.getContent(normalizePosition(pos, action.UP)) == cellStatus.Empty:
+            res+=1
+        if self.board.getContent(normalizePosition(pos, action.DOWN)) == cellStatus.Empty:
+            res+=1
+        if self.board.getContent(normalizePosition(pos, action.RIGHT)) == cellStatus.Empty:
+            res+=1
+        if self.board.getContent(normalizePosition(pos, action.LEFT)) == cellStatus.Empty:
+            res+=1
+        return res
+        
 class miniMax:
     @classmethod
     def calcMin(iClass,iState,iCurrentLevel, iMaxLevel):
