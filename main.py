@@ -108,6 +108,8 @@ class game:
             aList.append(move(actions.RIGHT))
         if self.board.getContent(normalizePosition(self.myPosition, actions.LEFT)) == cellStatus.EMPTY:
             aList.append(move(actions.LEFT))
+        if normalizePosition(self.myPosition, self.previousAction) == cellStatus.LIGHT:
+            aList.append(move(actions.DEPLOY))
         if not aList:
             aList.append(move(actions.DEPLOY))
         return aList
@@ -143,8 +145,12 @@ class game:
         # return a copy a the current game after the move is applied
         newGame = copy.deepcopy(self)
         newGame.board.setContent(newGame.myPosition, cellStatus.LIGHT)
-        newGame.myPosition = iMove.getNewCoord(newGame.myPosition)
-        self.previousAction = iMove
+        if iMove.value == actions.DEPLOY:
+            newGame.myPosition = self.previousAction.getNewCoord(newGame.myPosition)
+            newGame.board.setContent(newGame.myPosition, cellStatus.PLAYER)
+        else:
+            newGame.myPosition = iMove.getNewCoord(newGame.myPosition)
+        newGame.previousAction = iMove
         return newGame
 
     #Evaluate a game
