@@ -1,7 +1,6 @@
 import main
 import time
 
-
 myGame = main.game()
 
 myGame.board.setContent([3,3], main.cellStatus.LIGHT)
@@ -24,8 +23,8 @@ myGame.board.setContent([8,12], main.cellStatus.LIGHT)
 myGame.board.setContent([9,12], main.cellStatus.LIGHT)
 myGame.board.setContent([9,13], main.cellStatus.LIGHT)
 myGame.board.setContent([9,14], main.cellStatus.LIGHT)
-myGame.board.setContent([9,15], main.cellStatus.LIGHT)
-myGame.board.setContent([10,15], main.cellStatus.LIGHT)
+myGame.board.setContent([9,14], main.cellStatus.LIGHT)
+myGame.board.setContent([10,14], main.cellStatus.LIGHT)
 myGame.board.setContent([10,3], main.cellStatus.LIGHT)
 myGame.board.setContent([10,4], main.cellStatus.LIGHT)
 myGame.board.setContent([10,5], main.cellStatus.LIGHT)
@@ -49,13 +48,17 @@ myGame.board.setContent([20,12], main.cellStatus.LIGHT)
 myGame.board.setContent([21,12], main.cellStatus.LIGHT)
 myGame.board.setContent([21,13], main.cellStatus.LIGHT)
 myGame.board.setContent([21,14], main.cellStatus.LIGHT)
-myGame.board.setContent([21,15], main.cellStatus.LIGHT)
-myGame.board.setContent([21,16], main.cellStatus.LIGHT)
 
-myGame.setMyPosition(7, 21)
+
+print("setup position")
+myGame.setMyPosition(7, 10)
+drone = 3
+round = 0
 
 while 1:
 
+    print("=========== Round", round, "===============")
+    round += 1
     #Collet the inputs
     start_time = time.time()
     #helper_bots = int(raw_input())
@@ -73,20 +76,32 @@ while 1:
     #    remove_x, remove_y = [int(j) for j in raw_input().split()]
     #    myGame.refreshRemovePosition([remove_x, remove_y])
 
+
     myGame.applyPosition()
-    #myGame.setRemainingBots(helper_bots)
+    myGame.board.print()
 
     retour = main.miniMax.miniMax(myGame, 4)
     #print >> sys.stderr, "Debug messages...", retour
-
-    myGame.applyRefresh(retour)
 
     #theWinMove = miniMax.miniMax(myGame)
     end_time = time.time()
 
     print("Debug messages...", end_time-start_time)
 
-    prin( main.getLabel(retour.value))
+    print( main.getLabel(retour.value))
+
+    if retour.value == main.actions.DEPLOY:
+        drone -= 1
+        if drone < 0:
+            print("GAME OVER LOOSERS")
+            break
+
+
+    myGame.applyRefresh(retour)
+
+    myGame.myPosition = retour.getNewCoord(myGame.myPosition)
+
+
 
 
     # Write an action using print

@@ -88,6 +88,11 @@ class board:
     #Set the content of cell located at iPos       
     def setContent(self, iPos,iContent):
         self.grille[iPos[1]][iPos[0]] = iContent
+        self.grille[iPos[1]][iPos[0]]=iContent
+        
+    def print(self):
+        for line in self.grille:
+            print(str((' ').join([str(i).replace("0", ".") for i in line])))
 
 
 class move:
@@ -107,7 +112,6 @@ class game:
         self.myPosition = [-1, -1]
         self.previousAction = None
         self.remainingBots= 0
-        self.time = time.time()
 
     #List the possible moves for the current player
     def getMoves(self):
@@ -145,6 +149,7 @@ class game:
         for position in self.playerPosition:
             self.board.setContent(position, cellStatus.PLAYER)
 
+        print(self.myPosition)
         self.board.setContent(self.myPosition, cellStatus.PLAYER)
         
     #Post run step: update the game with the light trail
@@ -161,7 +166,7 @@ class game:
         newGame = copy.deepcopy(self)
         newGame.board.setContent(newGame.myPosition, cellStatus.LIGHT)
         if iMove.value == actions.DEPLOY:
-            print >> sys.stderr, "DEPLOY envisager" 
+            #print >> sys.stderr, "DEPLOY envisager"
             newGame.myPosition = self.previousAction.getNewCoord(newGame.myPosition)
             newGame.board.setContent(newGame.myPosition, cellStatus.PLAYER)
         else:
@@ -171,6 +176,7 @@ class game:
 
     #Evaluate a game
     def evaluate(self):
+        return self.evaluate2()
         pos = self.myPosition
         res = 0
         guard = 0
@@ -233,6 +239,54 @@ class game:
         return (30*4-result)
 
         
+    def evaluate1(self):
+        res = 0
+        res += self.evaluateDirection(actions.UP)
+        res += self.evaluateDirection(actions.DOWN)
+        res += self.evaluateDirection(actions.RIGHT)
+        res += self.evaluateDirection(actions.LEFT)
+        return res
+
+    def evaluate3(self):
+        pos = self.myPosition
+        res = 0
+        for i in range(0,3):
+            for j in range(0,3):
+                testedX = (pos[0]+i)%30
+                testedY = (pos[1]+j)%15
+                pos = [testedX,testedY]
+                if self.board.getContent(testedPos) == cellStatus.EMPTY:
+                    res+=1
+                    #print >> sys.stderr, "Evaluating...",pos
+        return res
+
+    def evaluateDirection(self,iAction):
+        pos = self.myPosition
+        testedPos = normalizePosition(pos, actions.UP)
+        guard = 0
+        res = 0
+        maxFree = 0
+        otherFree = 0
+        lightCount = 0
+        isLightCrossed = False
+        while guard < 15:
+            testedPos = normalizePosition(testedPos, actions.UP)
+            if self.board.getContent(testedPos) == cellStatus.EMPTY:
+                if isLightCrossed:
+                    otherFree += 1
+                else:
+                    maxFree+=1
+            elif self.board.getContent(testedPos) == cellStatus.LIGHT: 
+                isLightCrossed = True
+                lightCount += 1
+                
+            else: #Case of a player or bot
+                break
+            guard +=1
+        result = int(maxFree + round(10*otherFree / (1+lightCount) ))
+        #print >> sys.stderr, "Result",getLabel(iAction), maxFree, otherFree,lightCount,result
+        return result
+
 class miniMax:
     @classmethod
     def calcMin(iClass,iState,iCurrentLevel, iMaxLevel):
@@ -287,10 +341,8 @@ class miniMax:
 
 # game loop
 
-myGame = game()
-
-myGame.setMyPosition(7, 21)
-
+#myGame = game()
+'''
 while 1:
 
     #Collet the inputs
@@ -328,3 +380,4 @@ while 1:
 
     # Write an action using print
     # To debug: print >> sys.stderr, "Debug messages..."
+'''
