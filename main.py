@@ -90,7 +90,7 @@ class board:
         self.grille[iPos[1]][iPos[0]] = iContent
         self.grille[iPos[1]][iPos[0]]=iContent
         
-    def print(self):
+    def printObject(self):
         for line in self.grille:
             print(str((' ').join([str(i).replace("0", ".") for i in line])))
 
@@ -176,7 +176,7 @@ class game:
 
     #Evaluate a game
     def evaluate(self):
-        return self.evaluate2()
+        #return self.evaluate1()
         pos = self.myPosition
         res = 0
         guard = 0
@@ -283,7 +283,7 @@ class game:
             else: #Case of a player or bot
                 break
             guard +=1
-        result = int(maxFree + round(10*otherFree / (1+lightCount) ))
+        result = int(maxFree + round(2*otherFree / (1+lightCount) ))
         #print >> sys.stderr, "Result",getLabel(iAction), maxFree, otherFree,lightCount,result
         return result
 
