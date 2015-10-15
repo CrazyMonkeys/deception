@@ -61,7 +61,7 @@ def normalizePosition(iPos, iAction):
     aOutput = [aNewX,aNewY]
     return aOutput
 
-
+     
 class board:
     def __init__(self):
         self.xMax = 30
@@ -118,8 +118,8 @@ class game:
     def setMyPosition(self, x ,y):
         self.myPosition = [x, y]
 
-    def refreshRemovePosition(self, iX, iY):
-        self.playerDronePosition = [iX, iY]
+    def refreshRemovePosition(self, iPos):
+        self.board.setContent(iPos, cellStatus.EMPTY)
 
     def applyPosition(self):
         for position in self.playerPosition:
@@ -143,57 +143,33 @@ class game:
     def evaluate(self):
         pos = self.myPosition
         res = 0
-        temp = 0
         guard = 0
         testedPos = normalizePosition(pos, actions.UP)
         while self.board.getContent(testedPos) == cellStatus.EMPTY and guard < 15:
             testedPos = normalizePosition(testedPos, actions.UP)
-            temp+=1
+            res+=1
             guard +=1
-        res = temp + res
 
-        temp = 0
         guard = 0
         testedPos = normalizePosition(pos, actions.DOWN)
         while self.board.getContent(testedPos) == cellStatus.EMPTY and guard < 15:
             testedPos = normalizePosition(testedPos, actions.DOWN)
-            temp+=1
+            res+=1
             guard +=1
 
-        res = temp + res
-
-        temp = 0
         guard = 0
         testedPos = normalizePosition(pos, actions.RIGHT)
         while self.board.getContent(testedPos) == cellStatus.EMPTY and guard < 15:
             testedPos = normalizePosition(testedPos, actions.RIGHT)
-            temp+=1
+            res+=1
             guard +=1
 
-        res = temp + res
-
-        temp = 0
         guard = 0
         testedPos = normalizePosition(pos, actions.LEFT)
         while self.board.getContent(testedPos) == cellStatus.EMPTY and guard < 15:
             testedPos = normalizePosition(testedPos, actions.LEFT)
-            temp+=1
+            res+=1
             guard +=1
-
-        upLeftCorner = normalizePosition(normalizePosition(pos, actions.UP),actions.LEFT)
-        downLeftCorner = normalizePosition(normalizePosition(pos, actions.DOWN),actions.LEFT)
-        upRightCorner = normalizePosition(normalizePosition(pos, actions.UP),actions.RIGHT)
-        downRightCorner = normalizePosition(normalizePosition(pos, actions.DOWN),actions.RIGHT)
-
-        if self.board.getContent(upLeftCorner) == cellStatus.PLAYER:
-            res -=1
-        if self.board.getContent(downLeftCorner) == cellStatus.PLAYER:
-            res -=1
-        if self.board.getContent(upRightCorner) == cellStatus.PLAYER:
-            res -=1
-        if self.board.getContent(downRightCorner) == cellStatus.PLAYER:
-            res -=1
-        
         return res
         
 class miniMax:
@@ -266,7 +242,7 @@ while 1:
     removal_count = int(raw_input())
     for i in xrange(removal_count):
         remove_x, remove_y = [int(j) for j in raw_input().split()]
-        myGame.refreshRemovePosition(remove_x, remove_y)
+        myGame.refreshRemovePosition([remove_x, remove_y])
 
     myGame.applyPosition()
 
