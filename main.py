@@ -22,12 +22,12 @@ class board:
     def __init__(self):
         self.xMax = 30
         self.yMax = 15
-        self.grille = createGrille()
-    def createGrille():
-        pass
+        self.grille = []
+        for i in range(0,self.yMax):
+            self.grille.append([cellStatus.EMPTY]*xMax)            
 
-    def getContent(self, x, y):
-        pass
+    def getContent(self, iX, iY):
+        return self.grille[iY][iX]
 
 
 class move:
