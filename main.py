@@ -11,21 +11,44 @@ class cellStatus:
 class actions:
     UP=0
     DOWN=1
-    RIGHT=3
-    LEFT=4
-    def getLabel(self, iLabel):
-        if iLabel == 0:
-            return "UP"
-        elif iLabel == 1:
-            return "DOWN"
-        elif iLabel == 2:
-            return "RIGHT"
-        elif iLabel == 3:
-            return "LEFT"
+    RIGHT=2
+    LEFT=3
+    
+def getLabel(iLabel):
+    if iLabel == 0:
+        return "UP"
+    elif iLabel == 1:
+        return "DOWN"
+    elif iLabel == 2:
+        return "RIGHT"
+    elif iLabel == 3:
+        return "LEFT"
 
 class boardSize:
     X=29
     Y=14
+    
+def normalizePosition(iPos, iAction):
+    aNewX = iPos[0]
+    aNewY = iPos[1]
+    if iAction == actions.UP:
+        aNewY -=1 
+    elif iAction == actions.DOWN:
+        aNewY +=1
+    elif iAction == actions.RIGHT:
+        aNewX +=1
+    elif iAction == actions.LEFT:
+        aNewX -=1
+    if aNewX<0:
+        aNewX = boardSize.X
+    if aNewX>boardSize.X:
+        aNewX = 0
+    if aNewY<0:
+        aNewY = boardSize.Y
+    if aNewY>boardSize.Y:
+        aNewY = 0
+    aOutput = [aNewX,aNewY]
+    return aOutput
 
 class board:
     def __init__(self):
@@ -35,8 +58,9 @@ class board:
         for i in range(0,self.yMax):
             self.grille.append([cellStatus.EMPTY]*self.xMax)
 
-    def getContent(self, iX, iY):
-        return self.grille[iY][iX]
+    def getContent(self, iPos):
+        print >> sys.stderr, "content pos", iPos
+        return self.grille[iPos[1]][iPos[0]]
         
     def setContent(self, iX, iY,iContent):
         self.grille[iY][iX]=iContent
@@ -44,31 +68,9 @@ class board:
 class move:
     def __init__(self, iEnumMove):
         self.value = iEnumMove
-    @classmethod
-    def normalizePosition(iClass, iPos, iAction):
-        aNewX = iPos[0]
-        aNewY = iPos[1]
-        if iAction == actions.UP:
-            aNewY -=1 
-        elif iAction == actions.DOWN:
-            aNewY +=1
-        elif iAction == actions.RIGHT:
-            aNewX +=1
-        elif iAction == actions.LEFT:
-            aNewX -=1
-        if aNewX<0:
-            aNewX = boardSize.X
-        if aNewX>boardSize.X:
-            aNewX = 0
-        if aNewY<0:
-            aNewX = boardSize.Y
-        if aNewX>boardSize.Y:
-            aNewX = 0
-        aOutput = [aNewX,aNewY]
-        return aOutput
-        
+
     def getNewCoord(self,iPos):
-        return move.normalizePosition(iPos,self.value)
+        return normalizePosition(iPos,self.value)
 
 
 class game:
@@ -111,15 +113,15 @@ class game:
         return newGame
 
     def evaluate(self):
-        pos = self.playerPosition
+        pos = self.myPosition
         res = 0
-        if self.board.getContent(normalizePosition(pos, action.UP)) == cellStatus.Empty:
+        if self.board.getContent(normalizePosition(pos, actions.UP)) == cellStatus.EMPTY:
             res+=1
-        if self.board.getContent(normalizePosition(pos, action.DOWN)) == cellStatus.Empty:
+        if self.board.getContent(normalizePosition(pos, actions.DOWN)) == cellStatus.EMPTY:
             res+=1
-        if self.board.getContent(normalizePosition(pos, action.RIGHT)) == cellStatus.Empty:
+        if self.board.getContent(normalizePosition(pos, actions.RIGHT)) == cellStatus.EMPTY:
             res+=1
-        if self.board.getContent(normalizePosition(pos, action.LEFT)) == cellStatus.Empty:
+        if self.board.getContent(normalizePosition(pos, actions.LEFT)) == cellStatus.EMPTY:
             res+=1
         return res
         
@@ -165,7 +167,7 @@ class miniMax:
             if temp > valueBestMove:
                 valueBestMove=temp
                 bestMove=move
-        print "valueBestMove="+str(valueBestMove)
+        #print "valueBestMove="+str(valueBestMove)
         return bestMove
 
 
@@ -195,11 +197,12 @@ while 1:
     myGame.applyPosition()
 
     retour = miniMax.miniMax(myGame, 2)
-
+    print >> sys.stderr, "Debug messages...", retour
+    
     myGame.applyRefresh()
 
     #theWinMove = miniMax.miniMax(myGame)
-    print retour.getLabel()
+    print getLabel(retour.value)
 
 
     # Write an action using print
