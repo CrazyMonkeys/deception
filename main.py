@@ -123,8 +123,8 @@ class game:
     def setMyPosition(self, x ,y):
         self.myPosition = [x, y]
 
-    def setRemainingBots(self, iCount)
-            self.remainingBots=iCount
+    def setRemainingBots(self, iCount):
+        self.remainingBots=iCount
             
     def refreshRemovePosition(self, iPos):
         self.board.setContent(iPos, cellStatus.EMPTY)
@@ -138,7 +138,7 @@ class game:
         
     #Post run step: update the game with the light trail
     def applyRefresh(self,iPreviousAction):
-       self.previousAction = iPreviousAction
+        self.previousAction = iPreviousAction
         for position in self.playerPosition:
             self.board.setContent(position, cellStatus.LIGHT)
 
@@ -150,6 +150,7 @@ class game:
         newGame = copy.deepcopy(self)
         newGame.board.setContent(newGame.myPosition, cellStatus.LIGHT)
         if iMove.value == actions.DEPLOY:
+            print >> sys.stderr, "DEPLOY envisager" 
             newGame.myPosition = self.previousAction.getNewCoord(newGame.myPosition)
             newGame.board.setContent(newGame.myPosition, cellStatus.PLAYER)
         else:
@@ -268,7 +269,7 @@ while 1:
     myGame.applyPosition()
     myGame.setRemainingBots(helper_bots)
 
-    retour = miniMax.miniMax(myGame, 1)
+    retour = miniMax.miniMax(myGame, 4)
     #print >> sys.stderr, "Debug messages...", retour
     
     myGame.applyRefresh(retour)
