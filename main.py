@@ -120,9 +120,8 @@ class game:
     def setMyPosition(self, x ,y):
         self.myPosition = [x, y]
 
-    #Init step: set of the light cleared by the drones
-    def refreshRemovePosition(self, iX, iY):
-        self.playerDronePosition = [iX, iY]
+    def refreshRemovePosition(self, iPos):
+        self.board.setContent(iPos, cellStatus.EMPTY)
 
     #Init step: Update the game with player positions
     def applyPosition(self):
@@ -143,8 +142,9 @@ class game:
     def applyMove(self, iMove):
         # return a copy a the current game after the move is applied
         newGame = copy.deepcopy(self)
-        newGame.board.setContent(newGame.myPosition, actions.LIGHT)
+        newGame.board.setContent(newGame.myPosition, cellStatus.LIGHT)
         newGame.myPosition = iMove.getNewCoord(newGame.myPosition)
+        self.previousAction = iMove
         return newGame
 
     #Evaluate a game
@@ -252,7 +252,7 @@ while 1:
     removal_count = int(raw_input())
     for i in xrange(removal_count):
         remove_x, remove_y = [int(j) for j in raw_input().split()]
-        myGame.refreshRemovePosition(remove_x, remove_y)
+        myGame.refreshRemovePosition([remove_x, remove_y])
 
     myGame.applyPosition()
 
