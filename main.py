@@ -115,13 +115,25 @@ class game:
     def evaluate(self):
         pos = self.myPosition
         res = 0
-        if self.board.getContent(normalizePosition(pos, actions.UP)) == cellStatus.EMPTY:
+        
+        testedPos = normalizePosition(pos, actions.UP)
+        while self.board.getContent(testedPos) == cellStatus.EMPTY:
+            testedPos = normalizePosition(testedPos, actions.UP)
             res+=1
-        if self.board.getContent(normalizePosition(pos, actions.DOWN)) == cellStatus.EMPTY:
+        
+        testedPos = normalizePosition(pos, actions.DOWN)
+        while self.board.getContent(testedPos) == cellStatus.EMPTY:
+            testedPos = normalizePosition(testedPos, actions.DOWN)
             res+=1
-        if self.board.getContent(normalizePosition(pos, actions.RIGHT)) == cellStatus.EMPTY:
+        
+        testedPos = normalizePosition(pos, actions.RIGHT)
+        while self.board.getContent(testedPos) == cellStatus.EMPTY:
+            testedPos = normalizePosition(testedPos, actions.RIGHT)
             res+=1
-        if self.board.getContent(normalizePosition(pos, actions.LEFT)) == cellStatus.EMPTY:
+        
+        testedPos = normalizePosition(pos, actions.LEFT)
+        while self.board.getContent(testedPos) == cellStatus.EMPTY:
+            testedPos = normalizePosition(testedPos, actions.LEFT)
             res+=1
         return res
         
