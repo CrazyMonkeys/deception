@@ -95,9 +95,10 @@ class game:
         self.playerPosition = []
         self.playerDronePosition = []
         self.myPosition = [-1, -1]
+        self.previousAction = None
 
+    #List the possible moves for the current player
     def getMoves(self):
-
         aList = []
         if self.board.getContent(normalizePosition(self.myPosition, actions.UP)) == cellStatus.EMPTY:
             aList.append(move(actions.UP))
@@ -111,28 +112,34 @@ class game:
             aList.append(move(actions.DEPLOY))
         return aList
 
-
+    #Init step: set the position of players
     def refreshPosition(self, iX, iY):
         self.playerPosition.append([iX, iY])
 
+    #Init step: set the position of our player
     def setMyPosition(self, x ,y):
         self.myPosition = [x, y]
 
+    #Init step: set of the light cleared by the drones
     def refreshRemovePosition(self, iX, iY):
         self.playerDronePosition = [iX, iY]
 
+    #Init step: Update the game with player positions
     def applyPosition(self):
         for position in self.playerPosition:
             self.board.setContent(position, cellStatus.PLAYER)
 
         self.board.setContent(self.myPosition, cellStatus.PLAYER)
-
-    def applyRefresh(self):
+        
+    #Post run step: update the game with the light trail
+    def applyRefresh(self,iPreviousAction):
+       self.previousAction = iPreviousAction
         for position in self.playerPosition:
             self.board.setContent(position, cellStatus.LIGHT)
 
         self.board.setContent(self.myPosition, cellStatus.LIGHT)
 
+    #Apply a move to the current game and return a copy of the game
     def applyMove(self, iMove):
         # return a copy a the current game after the move is applied
         newGame = copy.deepcopy(self)
@@ -140,6 +147,7 @@ class game:
         newGame.myPosition = iMove.getNewCoord(newGame.myPosition)
         return newGame
 
+    #Evaluate a game
     def evaluate(self):
         pos = self.myPosition
         res = 0
@@ -229,6 +237,8 @@ my_id = int(raw_input())
 myGame = game()
 
 while 1:
+
+    #Collet the inputs
     start_time = time.time()
     helper_bots = int(raw_input())
     for i in xrange(player_count):
@@ -249,7 +259,7 @@ while 1:
     retour = miniMax.miniMax(myGame, 1)
     #print >> sys.stderr, "Debug messages...", retour
     
-    myGame.applyRefresh()
+    myGame.applyRefresh(retour)
 
     #theWinMove = miniMax.miniMax(myGame)
     end_time = time.time()
