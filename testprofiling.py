@@ -193,7 +193,7 @@ for myGame in aGamelist:
         myGame.applyPosition()
         myGame.board.printObject()
 
-        aGameProxy = Profiling.gameProxy(myGame.board)
+        aGameProxy = Profiling.gameProxy(myGame)
         retour = Profiling.miniMax.miniMax(aGameProxy, 4)
         #print >> sys.stderr, "Debug messages...", retour
 

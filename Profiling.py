@@ -210,9 +210,12 @@ class mutableState:
         self.patchDict = {}
 
 class gameProxy:
-    def __init__(self,iBoard):
-        self.board = iBoard
+    def __init__(self,iGame):
+        self.board = iGame.board
         self.mState = mutableState()
+        self.mState.myPosition =iGame.myPosition
+        self.mState.previousAction =iGame.previousAction
+        self.mState.remainingBots =iGame.remainingBots
     
     def getPatchedContent(self,iPos):
         k = tuple(iPos)
@@ -236,14 +239,16 @@ class gameProxy:
             #aList.append(move(actions.DEPLOY))
         if not aList:
             aList.append(move(actions.DEPLOY))
+        print aList
         return aList
 
 
     #Apply a move to the current game and return a copy of the game
     def applyMove(self, iMove):
         # return a copy a the current game proxy after the move is applied
-        newGame = gameProxy(self.board)
-        newGame.mState = copy.copy(self.mState)
+        newGame = copy.copy(self)
+        #newGame.board = self.board
+        #newGame.mState = copy.copy(self.mState)
         newGame.mState.patchDict[tuple(newGame.mState.myPosition)] = cellStatus.LIGHT
         newGame.mState.myPosition = iMove.getNewCoord(newGame.mState.myPosition)
         newGame.mState.previousAction = iMove
@@ -260,7 +265,7 @@ def main():
     start_time = time.time()
     mygame = game()
     mygame.setMyPosition(10, 10)
-    aGameProxy = gameProxy(mygame.board)
+    aGameProxy = gameProxy(mygame)
     retour = miniMax.miniMax(aGameProxy, 50)
     
     print >> sys.stderr, "Retour=",getLabel(retour.value)
@@ -269,6 +274,6 @@ def main():
 
     print >> sys.stderr, "debug messages..." ,end_time -start_time
     
-main()
+#main()
     # Write an action using print
     # To debug: print >> sys.stderr, "Debug messages..."
