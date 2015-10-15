@@ -14,6 +14,7 @@ class actions:
     DOWN=1
     RIGHT=2
     LEFT=3
+    DEPLOY=4
     
 def getLabel(iLabel):
     if iLabel == 0:
@@ -24,6 +25,8 @@ def getLabel(iLabel):
         return "RIGHT"
     elif iLabel == 3:
         return "LEFT"
+    elif iLabel == 4:
+        return "DEPLOY"
 
 class boardSize:
     X=29
@@ -91,6 +94,8 @@ class game:
             aList.append(move(actions.RIGHT))
         if self.board.getContent(normalizePosition(self.myPosition, actions.LEFT)) == cellStatus.EMPTY:
             aList.append(move(actions.LEFT))
+        if not aList:
+            aList.append(move(actions.DEPLOY))
         return aList
 
 
