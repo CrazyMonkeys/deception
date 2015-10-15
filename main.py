@@ -78,6 +78,10 @@ class game:
         self.playerDronePosition = []
         self.myPosition = [-1, -1]
 
+    def getMoves(self):
+        aList = [actions.DOWN, actions.UP, actions.RIGHT, actions.LEFT]
+        return aList
+
 
     def refreshPosition(self, iX, iY):
         self.playerPosition.append([iX, iY])
