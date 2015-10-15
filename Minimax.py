@@ -4,6 +4,7 @@ import sys
 import copy
 import cProfile
 
+
 def do_cprofile(func):
     def profiled_func(*args, **kwargs):
         profile = cProfile.Profile()
