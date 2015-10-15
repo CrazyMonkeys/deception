@@ -3,12 +3,15 @@ import math
 import copy
 import time
 
+
+#possible status of a cell of the board
 class cellStatus:
     EMPTY=0
     PLAYER=1
     LIGHT=2
     DRONE=3
 
+#Possible actions for a player
 class actions:
     UP=0
     DOWN=1
@@ -16,6 +19,7 @@ class actions:
     LEFT=3
     DEPLOY=4
     
+#Give the string label for the action to perform
 def getLabel(iLabel):
     if iLabel == 0:
         return "UP"
@@ -28,6 +32,8 @@ def getLabel(iLabel):
     elif iLabel == 4:
         return "DEPLOY"
 
+        
+#Board size, origin position = 0
 class boardSize:
     X=29
     Y=14
