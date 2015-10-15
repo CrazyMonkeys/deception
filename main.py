@@ -20,11 +20,10 @@ class board:
         self.yMax = 15
         self.grille = []
         for i in range(0,self.yMax):
-            self.grille.append()
-            
+            self.grille.append([cellStatus.EMPTY]*xMax)            
 
-    def getContent(self, x, y):
-        pass
+    def getContent(self, iX, iY):
+        return self.grille[iY][iX]
 
 
 class move:
