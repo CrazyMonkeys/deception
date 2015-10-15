@@ -1,5 +1,6 @@
 import sys
 import math
+import copy
 
 class cellStatus:
 EMPTY=0
@@ -62,9 +63,6 @@ class game:
         self.playerPosition = []
         self.playerDronePosition = []
 
-    def refreshPosition(iSelf, iX, iY):
-        iSelf.playerPosition = [iX, iY]
-
     def refreshRemovePosition(iSelf, iX, iY):
         iSelf.playerDronePosition[iX, iY]
 
@@ -73,7 +71,10 @@ class game:
 
     def applyMove(self, iMove):
         # return a copy a the current game after the move is applied
-        pass
+        if iMove.getNewCoord(self.myPostion[0],1)
+        newGame = copy.copy(self)
+        newGame. 
+        return
 
 
 class miniMax:
