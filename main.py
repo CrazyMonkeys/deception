@@ -18,7 +18,7 @@ class actions:
     RIGHT=2
     LEFT=3
     DEPLOY=4
-    
+
 #Give the string label for the action to perform
 def getLabel(iLabel):
     if iLabel == 0:
@@ -37,6 +37,16 @@ def getLabel(iLabel):
 class boardSize:
     X=29
     Y=14
+
+class temps:
+    def __init__(self):
+        self.time = time.time()
+
+    def is_enough_time(self):
+        if time.time() - self.time > 0.80:
+            return True
+        else:
+            return False
     
 #Static method retuning an updated position based on  current pos + move. Thore board is taken into account
 def normalizePosition(iPos, iAction):
@@ -77,7 +87,7 @@ class board:
         
     #Set the content of cell located at iPos       
     def setContent(self, iPos,iContent):
-        self.grille[iPos[1]][iPos[0]]=iContent
+        self.grille[iPos[1]][iPos[0]] = iContent
 
 
 class move:
@@ -97,18 +107,19 @@ class game:
         self.myPosition = [-1, -1]
         self.previousAction = None
         self.remainingBots= 0
+        self.time = time.time()
 
     #List the possible moves for the current player
     def getMoves(self):
         aList = []
-        if self.board.getContent(normalizePosition(self.myPosition, actions.UP)) == cellStatus.EMPTY:
-            aList.append(move(actions.UP))
-        if self.board.getContent(normalizePosition(self.myPosition, actions.DOWN)) == cellStatus.EMPTY:
-            aList.append(move(actions.DOWN))
         if self.board.getContent(normalizePosition(self.myPosition, actions.RIGHT)) == cellStatus.EMPTY:
             aList.append(move(actions.RIGHT))
         if self.board.getContent(normalizePosition(self.myPosition, actions.LEFT)) == cellStatus.EMPTY:
             aList.append(move(actions.LEFT))
+        if self.board.getContent(normalizePosition(self.myPosition, actions.UP)) == cellStatus.EMPTY:
+            aList.append(move(actions.UP))
+        if self.board.getContent(normalizePosition(self.myPosition, actions.DOWN)) == cellStatus.EMPTY:
+            aList.append(move(actions.DOWN))
         if normalizePosition(self.myPosition, self.previousAction) == cellStatus.LIGHT:
             aList.append(move(actions.DEPLOY))
         if not aList:
@@ -190,6 +201,37 @@ class game:
             res+=1
             guard +=1
         return res
+
+
+    def evaluate2(self):
+        pos = self.myPosition
+        testedPos = normalizePosition(pos, actions.UP)
+        result = 0
+        guard = 0
+        while self.board.getContent(testedPos) != cellStatus.LIGHT and guard < 30:
+            testedPos = normalizePosition(pos, actions.UP)
+            result += 1
+            guard +=1
+        guard = 0
+        testedPos = normalizePosition(pos, actions.DOWN)
+        while self.board.getContent(testedPos) != cellStatus.LIGHT and guard < 30:
+            testedPos = normalizePosition(pos, actions.DOWN)
+            result += 1
+            guard +=1
+        guard = 0
+        testedPos = normalizePosition(pos, actions.LEFT)
+        while self.board.getContent(testedPos) != cellStatus.LIGHT and guard < 30:
+            testedPos = normalizePosition(pos, actions.LEFT)
+            result += 1
+            guard +=1
+        guard = 0
+        testedPos = normalizePosition(pos, actions.RIGHT)
+        while self.board.getContent(testedPos) != cellStatus.LIGHT and guard < 30:
+            testedPos = normalizePosition(pos, actions.RIGHT)
+            result += 1
+            guard +=1
+        return (30*4-result)
+
         
 class miniMax:
     @classmethod
@@ -212,7 +254,7 @@ class miniMax:
     def calcMax(iClass,iState,iCurrentLevel, iMaxLevel):
         #iState.display()
         if iCurrentLevel == iMaxLevel:
-            return iState.evaluate()
+            return iState.evaluate2()
         else:
             valueBestMove =-100000
             for move in iState.getMoves():
@@ -240,46 +282,48 @@ class miniMax:
 # Auto-generated code below aims at helping you parse
 # the standard input according to the problem statement.
 
-player_count = int(raw_input())
-my_id = int(raw_input())
+#player_count = int(raw_input())
+#my_id = int(raw_input())
 
 # game loop
 
 myGame = game()
 
+myGame.setMyPosition(7, 21)
+
 while 1:
 
     #Collet the inputs
     start_time = time.time()
-    helper_bots = int(raw_input())
-    
-    for i in xrange(player_count):
-        x, y = [int(j) for j in raw_input().split()]
-        if x > -1:
+    #helper_bots = int(raw_input())
+
+    #for i in xrange(player_count):
+    #    x, y = [int(j) for j in raw_input().split()]
+    #    if x > -1:
         # real player have x,y > 0
-            if i == my_id:
-                myGame.setMyPosition(x, y)
-            else:
-                myGame.refreshPosition(x, y)
-    removal_count = int(raw_input())
-    for i in xrange(removal_count):
-        remove_x, remove_y = [int(j) for j in raw_input().split()]
-        myGame.refreshRemovePosition([remove_x, remove_y])
+    #        if i == my_id:
+    #            myGame.setMyPosition(x, y)
+    #        else:
+    #            myGame.refreshPosition(x, y)
+    #removal_count = int(raw_input())
+    #for i in xrange(removal_count):
+    #    remove_x, remove_y = [int(j) for j in raw_input().split()]
+    #    myGame.refreshRemovePosition([remove_x, remove_y])
 
     myGame.applyPosition()
-    myGame.setRemainingBots(helper_bots)
+    #myGame.setRemainingBots(helper_bots)
 
     retour = miniMax.miniMax(myGame, 4)
     #print >> sys.stderr, "Debug messages...", retour
-    
+
     myGame.applyRefresh(retour)
 
     #theWinMove = miniMax.miniMax(myGame)
     end_time = time.time()
 
-    print >> sys.stderr, "Debug messages..." ,end_time-start_time
-    
-    print getLabel(retour.value)
+    print ("Debug messages..." ,end_time-start_time)
+
+    print(getLabel(retour.value))
     
 
     # Write an action using print
