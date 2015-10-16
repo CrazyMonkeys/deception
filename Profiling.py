@@ -171,7 +171,7 @@ class miniMax:
         cprint("CALCMAX LEVEL="+str(iCurrentLevel))
         iState.printObject()
         if iCurrentLevel == iMaxLevel:
-            print "max prof =" + str(iCurrentLevel)
+            cprint ("max prof =" + str(iCurrentLevel))
             return iCurrentLevel
         else:
             valueBestMove =-100000
@@ -184,8 +184,8 @@ class miniMax:
                 
                 if temp > valueBestMove:
                     valueBestMove=temp
-            else:
-                print "leaf = " + str(iCurrentLevel)
+            if not M:
+                cprint("leaf = " + str(iCurrentLevel))
                 return iCurrentLevel
                 
             return valueBestMove
@@ -196,13 +196,13 @@ class miniMax:
         #iState.display()
         bestMove = None
         valueBestMove = -100000
-        for move in iState.getMoves():
-            cprint( "miniMax :Evaluating"+' '+ getLabel(move.value))
-            temp = iClass.calcMax(iState.applyMove(move),1,iMaxLevel)
-            print "move is", temp, " best move is ", valueBestMove
+        for m in iState.getMoves():
+            cprint( "miniMax :Evaluating"+' '+ getLabel(m.value))
+            temp = iClass.calcMax(iState.applyMove(m),1,iMaxLevel)
+            print "m is", temp, " best move is ", valueBestMove
             if temp > valueBestMove:
                 valueBestMove=temp
-                bestMove=move
+                bestMove=m
         return bestMove
     
 class mutableState:
