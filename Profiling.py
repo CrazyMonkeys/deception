@@ -68,6 +68,7 @@ def normalizePosition(iPos, iAction):
         aNewX +=1
     elif iAction == actions.LEFT:
         aNewX -=1
+
     if aNewX<0:
         aNewX = boardSize.X
     if aNewX>boardSize.X:
@@ -143,7 +144,8 @@ class game:
         
     #Post run step: update the game with the light trail
     def applyRefresh(self,iPreviousAction):
-        self.previousAction = iPreviousAction
+        if iPreviousAction.value != actions.DEPLOY:
+            self.previousAction = iPreviousAction
         for position in self.playerPosition:
             self.board.setContent(position, cellStatus.LIGHT)
 
@@ -160,7 +162,7 @@ class game:
             newGame.board.setContent(newGame.myPosition, cellStatus.PLAYER)
         else:
             newGame.myPosition = iMove.getNewCoord(newGame.myPosition)
-        newGame.previousAction = iMove
+            newGame.previousAction = iMove
         return newGame
         
 class miniMax:
@@ -257,9 +259,11 @@ class gameProxy:
 
         if self.getPatchedContent(normalizePosition(self.mState.myPosition, actions.LEFT)) == cellStatus.EMPTY:
             aList.append(move(actions.LEFT))
-
-        #if normalizePosition(self.myPosition, self.previousAction) == cellStatus.LIGHT:
-            #aList.append(move(actions.DEPLOY))
+        if self.mState.previousAction:
+            #print "get moves / remaining bots: ",getLabel(self.mState.previousAction.value) , normalizePosition(self.mState.myPosition, self.mState.previousAction.value)
+            if self.getPatchedContent(normalizePosition(self.mState.myPosition, self.mState.previousAction.value)) == cellStatus.LIGHT and self.mState.remainingBots >0:
+                aList.append(move(actions.DEPLOY))
+                #print "Deployed considered"
         
         #if not aList:
             #aList.append(move(actions.DEPLOY))
@@ -273,11 +277,19 @@ class gameProxy:
         mState = copy.copy(self.mState)
         newGame = copy.copy(self)
         newGame.setStateFromProxyGame(mState)
+        #INVARIANT: newGame and self are light copies
         
         newGame.mState.patchDict[tuple(newGame.mState.myPosition)] = cellStatus.LIGHT
-        newGame.mState.myPosition = iMove.getNewCoord(newGame.mState.myPosition)
+        if iMove.value == actions.DEPLOY:
+            newGame.mState.remainingBots -=1
+            
+            newGame.mState.myPosition = self.mState.previousAction.getNewCoord(newGame.mState.myPosition)
+        else:
+            newGame.mState.myPosition = iMove.getNewCoord(newGame.mState.myPosition)
+            newGame.mState.previousAction = iMove
+        
+        #INVARIANT : position is update accordingly to move
         newGame.mState.patchDict[tuple(newGame.mState.myPosition)] = cellStatus.PLAYER
-        newGame.mState.previousAction = iMove
         #newGame.printObject()
         return newGame
 

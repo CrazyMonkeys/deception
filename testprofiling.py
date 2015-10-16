@@ -167,6 +167,8 @@ aGamelist.append(getGame2())
 for myGame in aGamelist:
 
     myGame.setMyPosition(7, 10)
+    myGame.setMyPosition(7, 10)
+    myGame.setRemainingBots(3)
     drone = 3
     round = 0
 
@@ -199,7 +201,7 @@ for myGame in aGamelist:
         aGameProxy = Profiling.gameProxy(myGame)
 
         aGameProxy.setStateFromGame(myGame)
-        retour = Profiling.miniMax.miniMax(aGameProxy, 50)
+        retour = Profiling.miniMax.miniMax(aGameProxy, 500)
 
         #print >> sys.stderr, "Debug messages...", retour
 
@@ -216,14 +218,20 @@ for myGame in aGamelist:
         print( Profiling.getLabel(retour.value))
 
         if retour.value == Profiling.actions.DEPLOY:
+            
             print "DEPLOY"
             drone -= 1
             if drone < 0:
                 print("GAME OVER LOOSERS")
                 break
+        print "REMAINING DRONES",drone
 
         myGame.applyRefresh(retour)
-        myGame.myPosition = retour.getNewCoord(myGame.myPosition)
+        if retour.value == Profiling.actions.DEPLOY:
+            myGame.myPosition = myGame.previousAction.getNewCoord(myGame.myPosition)
+            print "TEST previous "+Profiling.getLabel(myGame.previousAction.value)
+        else:
+            myGame.myPosition = retour.getNewCoord(myGame.myPosition)
         if  myGame.board.getContent(myGame.myPosition) == 2 and not retour.value == Profiling.actions.DEPLOY:
             print "I SAW THE LIGHT"
             break
