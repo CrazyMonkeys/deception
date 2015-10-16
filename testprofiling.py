@@ -1,6 +1,8 @@
 import Profiling
 import time
 
+LOGGING = False
+
 
 
 def getGame1():
@@ -158,7 +160,7 @@ def getGame2():
 print("setup position")
 
 aGamelist = []
-aGamelist.append(getGame2())
+#aGamelist.append(getGame2())
 aGamelist.append(getGame1())
 
 for myGame in aGamelist:
@@ -194,14 +196,22 @@ for myGame in aGamelist:
         myGame.board.printObject()
 
         aGameProxy = Profiling.gameProxy(myGame)
-        retour = Profiling.miniMax.miniMax(aGameProxy, 4)
+
+        aGameProxy.setStateFromGame(myGame)
+        retour = Profiling.miniMax.miniMax(aGameProxy, 7)
+
         #print >> sys.stderr, "Debug messages...", retour
 
         #theWinMove = miniMax.miniMax(myGame)
         end_time = time.time()
-
+        
         print("Debug messages...", end_time-start_time)
-
+         
+        if not retour:
+            print "BLOCKED: GAME OVER"
+            break
+       
+       
         print( Profiling.getLabel(retour.value))
 
         if retour.value == Profiling.actions.DEPLOY:
@@ -211,15 +221,11 @@ for myGame in aGamelist:
                 print("GAME OVER LOOSERS")
                 break
 
-
         myGame.applyRefresh(retour)
         myGame.myPosition = retour.getNewCoord(myGame.myPosition)
-        if  myGame.board.getContent(myGame.myPosition) == 2:
+        if  myGame.board.getContent(myGame.myPosition) == 2 and not retour.value == Profiling.actions.DEPLOY:
             print "I SAW THE LIGHT"
             break
-        
-
-
 
 
         # Write an action using print

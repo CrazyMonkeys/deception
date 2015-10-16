@@ -4,6 +4,12 @@ import copy
 import time
 import cProfile
 
+LOGGING = False
+
+def cprint(iString):
+    if LOGGING:
+        print str(iString)
+
 def do_cprofile(func):
     def profiled_func(*args, **kwargs):
         profile = cProfile.Profile()
@@ -158,36 +164,31 @@ class game:
         return newGame
         
 class miniMax:
-    @classmethod
-    def calcMin(iClass,iState,iCurrentLevel, iMaxLevel):
-        #iState.display()
-        if iCurrentLevel == iMaxLevel:
-            return iState.evaluate(iCurrentLevel)
-        else:
-            valueBestMove = +100000
-            for move in iState.getMoves():
-                temp = iClass.calcMax(iState.applyMove(move),iCurrentLevel+1,iMaxLevel)
-                if temp < valueBestMove:
-                    valueBestMove=temp
-                    bestMove=move
-            else:
-                return iState.evaluate(iCurrentLevel)
-            return valueBestMove
 
     @classmethod
     def calcMax(iClass,iState,iCurrentLevel, iMaxLevel):
         #iState.display()
+        cprint("CALCMAX LEVEL="+str(iCurrentLevel))
+        iState.printObject()
         if iCurrentLevel == iMaxLevel:
-            return iState.evaluate(iCurrentLevel)
+            print "max prof =" + str(iCurrentLevel)
+            return iCurrentLevel
         else:
             valueBestMove =-100000
-            for move in iState.getMoves():
-                temp = iClass.calcMax(iState.applyMove(move),iCurrentLevel+1,iMaxLevel)
+            M = iState.getMoves()
+            cprint("Possible moves in calcMax :"+str([getLabel(m.value) for m in M]))
+            for m in M:
+                cprint( "calcMax :Evaluating move"+' '+ getLabel(m.value)+' at level'+str(iCurrentLevel))
+                temp = iClass.calcMax(iState.applyMove(m),iCurrentLevel+1,iMaxLevel)
+                cprint( "calcMax :Result="+ str(temp))
+                
                 if temp > valueBestMove:
                     valueBestMove=temp
             else:
-                return iState.evaluate(iCurrentLevel)
-            return	valueBestMove
+                print "leaf = " + str(iCurrentLevel)
+                return iCurrentLevel
+                
+            return valueBestMove
 
     
     @classmethod
@@ -196,7 +197,9 @@ class miniMax:
         bestMove = None
         valueBestMove = -100000
         for move in iState.getMoves():
+            cprint( "miniMax :Evaluating"+' '+ getLabel(move.value))
             temp = iClass.calcMax(iState.applyMove(move),1,iMaxLevel)
+            print "move is", temp, " best move is ", valueBestMove
             if temp > valueBestMove:
                 valueBestMove=temp
                 bestMove=move
@@ -216,7 +219,22 @@ class gameProxy:
         self.mState.myPosition =iGame.myPosition
         self.mState.previousAction =iGame.previousAction
         self.mState.remainingBots =iGame.remainingBots
-   
+        
+    def printObject(self):
+        cprint ("Evaluating board")
+        for i in range(0,15):
+            line =''
+            for j in range(0,30):
+                line += str(self.getPatchedContent([j,i])).replace("0", ".")+' '
+            cprint(line)
+
+    def setStateFromGame(self,iGame):
+        self.mState.myPosition = iGame.myPosition
+        self.mState.previousAction = iGame.previousAction
+        self.mState.remainingBots= iGame.remainingBots
+
+    def setStateFromProxyGame(self,iMutableState):
+        self.mState = iMutableState
     
     def getPatchedContent(self,iPos):
         k = tuple(iPos)
@@ -230,33 +248,42 @@ class gameProxy:
         aList = []
         if self.getPatchedContent(normalizePosition(self.mState.myPosition, actions.UP)) == cellStatus.EMPTY:
             aList.append(move(actions.UP))
+
         if self.getPatchedContent(normalizePosition(self.mState.myPosition, actions.DOWN)) == cellStatus.EMPTY:
             aList.append(move(actions.DOWN))
+
         if self.getPatchedContent(normalizePosition(self.mState.myPosition, actions.RIGHT)) == cellStatus.EMPTY:
             aList.append(move(actions.RIGHT))
+
         if self.getPatchedContent(normalizePosition(self.mState.myPosition, actions.LEFT)) == cellStatus.EMPTY:
             aList.append(move(actions.LEFT))
+
         #if normalizePosition(self.myPosition, self.previousAction) == cellStatus.LIGHT:
             #aList.append(move(actions.DEPLOY))
-        if not aList:
-            aList.append(move(actions.DEPLOY))
-        print aList
+        
+        #if not aList:
+            #aList.append(move(actions.DEPLOY))
+        cprint("Possible moves :"+str([getLabel(m.value) for m in aList]))
         return aList
 
 
     #Apply a move to the current game and return a copy of the game
     def applyMove(self, iMove):
         # return a copy a the current game proxy after the move is applied
+        mState = copy.deepcopy(self.mState)
         newGame = copy.copy(self)
-        #newGame.board = self.board
-        newGame.mState = copy.copy(self.mState)
+        newGame.setStateFromProxyGame(mState)
+        
         newGame.mState.patchDict[tuple(newGame.mState.myPosition)] = cellStatus.LIGHT
         newGame.mState.myPosition = iMove.getNewCoord(newGame.mState.myPosition)
+        newGame.mState.patchDict[tuple(newGame.mState.myPosition)] = cellStatus.PLAYER
         newGame.mState.previousAction = iMove
+        #newGame.printObject()
         return newGame
 
     #Evaluate a game
     def evaluate(self,iProf):
+        #print "prof",iProf
         return iProf
 
 
@@ -267,7 +294,7 @@ def main():
     mygame = game()
     mygame.setMyPosition(10, 10)
     aGameProxy = gameProxy(mygame)
-    retour = miniMax.miniMax(aGameProxy, 50)
+    retour = miniMax.miniMax(aGameProxy, 4)
     
     print >> sys.stderr, "Retour=",getLabel(retour.value)
     
