@@ -3,6 +3,7 @@ import math
 import copy
 import time
 import cProfile
+import random
 
 LOGGING = False
 
@@ -144,7 +145,7 @@ class game:
         
     #Post run step: update the game with the light trail
     def applyRefresh(self,iPreviousAction):
-        if iPreviousAction.value != actions.DEPLOY:
+        if iPreviousAction and iPreviousAction.value != actions.DEPLOY:
             self.previousAction = iPreviousAction
         for position in self.playerPosition:
             self.board.setContent(position, cellStatus.LIGHT)
@@ -268,6 +269,7 @@ class gameProxy:
         #if not aList:
             #aList.append(move(actions.DEPLOY))
         cprint("Possible moves :"+str([getLabel(m.value) for m in aList]))
+        random.shuffle(aList)
         return aList
 
 
@@ -311,6 +313,7 @@ while 1:
     #Collet the inputs
     start_time = time.time()
     helper_bots = int(raw_input())
+    myGame.setRemainingBots(helper_bots)
 
     for i in xrange(player_count):
         x, y = [int(j) for j in raw_input().split()]
@@ -324,6 +327,8 @@ while 1:
     for i in xrange(removal_count):
         remove_x, remove_y = [int(j) for j in raw_input().split()]
         myGame.refreshRemovePosition([remove_x, remove_y])
+
+    myGame.applyPosition()
 
     aGameProxy = gameProxy(myGame)
 
