@@ -216,11 +216,12 @@ class gameProxy:
         self.mState.myPosition =iGame.myPosition
         self.mState.previousAction =iGame.previousAction
         self.mState.remainingBots =iGame.remainingBots
+   
     
     def getPatchedContent(self,iPos):
         k = tuple(iPos)
-        if tuple(k) in self.mState.patchDict:
-            return self.mState.patchDict[tuple(k)]
+        if k in self.mState.patchDict:
+            return self.mState.patchDict[k]
         else:
             return self.board.getContent(iPos)
 
@@ -248,7 +249,7 @@ class gameProxy:
         # return a copy a the current game proxy after the move is applied
         newGame = copy.copy(self)
         #newGame.board = self.board
-        #newGame.mState = copy.copy(self.mState)
+        newGame.mState = copy.copy(self.mState)
         newGame.mState.patchDict[tuple(newGame.mState.myPosition)] = cellStatus.LIGHT
         newGame.mState.myPosition = iMove.getNewCoord(newGame.mState.myPosition)
         newGame.mState.previousAction = iMove
