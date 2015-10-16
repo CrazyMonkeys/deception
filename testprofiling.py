@@ -160,8 +160,9 @@ def getGame2():
 print("setup position")
 
 aGamelist = []
-#aGamelist.append(getGame2())
-aGamelist.append(getGame1())
+aGamelist.append(getGame2())
+#aGamelist.append(getGame1())
+
 
 for myGame in aGamelist:
 
@@ -198,7 +199,7 @@ for myGame in aGamelist:
         aGameProxy = Profiling.gameProxy(myGame)
 
         aGameProxy.setStateFromGame(myGame)
-        retour = Profiling.miniMax.miniMax(aGameProxy, 7)
+        retour = Profiling.miniMax.miniMax(aGameProxy, 50)
 
         #print >> sys.stderr, "Debug messages...", retour
 

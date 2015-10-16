@@ -169,7 +169,7 @@ class miniMax:
     def calcMax(iClass,iState,iCurrentLevel, iMaxLevel):
         #iState.display()
         cprint("CALCMAX LEVEL="+str(iCurrentLevel))
-        iState.printObject()
+        #iState.printObject()
         if iCurrentLevel == iMaxLevel:
             cprint ("max prof =" + str(iCurrentLevel))
             return iCurrentLevel
@@ -270,7 +270,7 @@ class gameProxy:
     #Apply a move to the current game and return a copy of the game
     def applyMove(self, iMove):
         # return a copy a the current game proxy after the move is applied
-        mState = copy.deepcopy(self.mState)
+        mState = copy.copy(self.mState)
         newGame = copy.copy(self)
         newGame.setStateFromProxyGame(mState)
         
@@ -294,7 +294,7 @@ def main():
     mygame = game()
     mygame.setMyPosition(10, 10)
     aGameProxy = gameProxy(mygame)
-    retour = miniMax.miniMax(aGameProxy, 4)
+    retour = miniMax.miniMax(aGameProxy, 7)
     
     print >> sys.stderr, "Retour=",getLabel(retour.value)
     
