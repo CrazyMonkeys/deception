@@ -281,7 +281,6 @@ class gameProxy:
 
         if self.getPatchedContent(normalizePosition(self.mState.myPosition, actions.LEFT)) == cellStatus.EMPTY:
             aList.append(move(actions.LEFT))
-        random.shuffle(aList)
         if self.mState.previousAction:
             #print "get moves / remaining bots: ",getLabel(self.mState.previousAction.value) , normalizePosition(self.mState.myPosition, self.mState.previousAction.value)
             if self.getPatchedContent(normalizePosition(self.mState.myPosition, self.mState.previousAction.value)) == cellStatus.LIGHT and self.mState.remainingBots >0:
