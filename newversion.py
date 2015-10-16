@@ -203,10 +203,31 @@ class miniMax:
             cprint( "miniMax :Evaluating"+' '+ getLabel(m.value))
             temp = iClass.calcMax(iState.applyMove(m),1,iMaxLevel)
             #print "m is", temp, " best move is ", valueBestMove
+            
+            #Apply risk factor on temp
+            if iClass.isRisky(iState,m):
+                temp = round(temp / 2.0)
             if temp > valueBestMove:
                 valueBestMove=temp
                 bestMove=m
         return bestMove
+
+    @classmethod        
+    def isRisky(iClass,iState,iMove):
+        newPos = normalizePosition(iState.mState.myPosition, iMove)
+        numPlayers = 0
+        if iState.getPatchedContent(normalizePosition(newPos, actions.UP)) == cellStatus.PLAYER:
+            numPlayers+=1
+        if iState.getPatchedContent(normalizePosition(newPos, actions.DOWN)) == cellStatus.PLAYER:
+            numPlayers+=1
+        if iState.getPatchedContent(normalizePosition(newPos, actions.RIGHT)) == cellStatus.PLAYER:
+            numPlayers+=1
+        if iState.getPatchedContent(normalizePosition(newPos, actions.LEFT)) == cellStatus.PLAYER:
+            numPlayers+=1
+        return numPlayers > 2
+        
+        
+    
     
 class mutableState:
     def __init__(self):
